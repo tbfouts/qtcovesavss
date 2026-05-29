@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COVESA VSS Qt Library — Design Document</title>
+<style>
+  :root {
+    --qt-green: #41cd52;
+    --qt-dark: #1d1d1d;
+    --qt-gray: #f5f5f5;
+    --qt-border: #e0e0e0;
+    --accent: #2563eb;
+    --warn: #d97706;
+    --danger: #dc2626;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #222; line-height: 1.6; background: #fff; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* Header */
+  header { background: var(--qt-dark); color: #fff; padding: 48px 0 40px; }
+  header h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 8px; }
+  header h1 span { color: var(--qt-green); }
+  header .subtitle { font-size: 1.1rem; color: #aaa; max-width: 700px; }
+  header .meta { margin-top: 20px; display: flex; gap: 24px; font-size: 0.85rem; color: #888; }
+  header .meta strong { color: #ccc; }
+
+  /* Nav */
+  nav { background: #fafafa; border-bottom: 1px solid var(--qt-border); position: sticky; top: 0; z-index: 100; }
+  nav ul { list-style: none; display: flex; gap: 0; overflow-x: auto; }
+  nav a { display: block; padding: 12px 18px; font-size: 0.85rem; color: #555; text-decoration: none; white-space: nowrap; border-bottom: 2px solid transparent; }
+  nav a:hover { color: var(--qt-dark); border-bottom-color: var(--qt-green); }
+
+  /* Sections */
+  section { padding: 48px 0; border-bottom: 1px solid var(--qt-border); }
+  section:last-child { border-bottom: none; }
+  h2 { font-size: 1.5rem; margin-bottom: 20px; color: var(--qt-dark); }
+  h3 { font-size: 1.15rem; margin: 24px 0 12px; color: #333; }
+  p { margin-bottom: 16px; max-width: 800px; }
+
+  /* Diagram boxes */
+  .arch-diagram { display: flex; flex-direction: column; gap: 12px; margin: 24px 0; max-width: 700px; }
+  .arch-row { display: flex; gap: 12px; align-items: stretch; }
+  .arch-box { flex: 1; border: 2px solid var(--qt-border); border-radius: 8px; padding: 16px; text-align: center; font-size: 0.9rem; }
+  .arch-box.green { border-color: var(--qt-green); background: #f0fdf4; }
+  .arch-box.blue { border-color: var(--accent); background: #eff6ff; }
+  .arch-box.gray { border-color: #999; background: var(--qt-gray); }
+  .arch-box .label { font-weight: 700; display: block; margin-bottom: 4px; }
+  .arch-box .detail { font-size: 0.78rem; color: #666; }
+  .arch-arrow { text-align: center; font-size: 1.4rem; color: #999; }
+
+  /* Module table */
+  .module-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; margin: 20px 0; }
+  .module-card { border: 1px solid var(--qt-border); border-radius: 8px; padding: 16px; background: #fff; }
+  .module-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .module-card .module-name { font-weight: 700; font-size: 0.95rem; color: var(--accent); margin-bottom: 4px; font-family: 'SF Mono', Menlo, monospace; }
+  .module-card .module-uri { font-size: 0.78rem; color: #888; margin-bottom: 8px; font-family: monospace; }
+  .module-card ul { list-style: none; font-size: 0.85rem; }
+  .module-card li { padding: 2px 0; }
+  .module-card li::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; background: var(--qt-green); }
+  .module-card li.zoned::before { background: var(--warn); }
+
+  /* Property tables */
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.85rem; }
+  th { text-align: left; padding: 10px 12px; background: var(--qt-gray); border-bottom: 2px solid var(--qt-border); font-weight: 600; }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--qt-border); }
+  tr:hover td { background: #f9fafb; }
+  .type { font-family: 'SF Mono', Menlo, monospace; font-size: 0.8rem; color: var(--accent); }
+  .readonly { font-size: 0.7rem; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 3px; }
+  .writable { font-size: 0.7rem; background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 3px; }
+  .zoned-badge { font-size: 0.7rem; background: #fce7f3; color: #9d174d; padding: 2px 6px; border-radius: 3px; }
+
+  /* Code */
+  pre { background: #1e1e1e; color: #d4d4d4; padding: 20px; border-radius: 8px; overflow-x: auto; margin: 16px 0; font-size: 0.85rem; line-height: 1.5; }
+  code { font-family: 'SF Mono', Menlo, monospace; }
+  pre .kw { color: #569cd6; }
+  pre .str { color: #ce9178; }
+  pre .cmt { color: #6a9955; }
+  pre .type { color: #4ec9b0; font-family: inherit; font-size: inherit; background: none; padding: 0; }
+  pre .num { color: #b5cea8; }
+
+  /* Bug callout */
+  .callout { border-left: 4px solid var(--danger); background: #fef2f2; padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 20px 0; }
+  .callout.warn { border-left-color: var(--warn); background: #fffbeb; }
+  .callout h4 { margin-bottom: 8px; color: var(--danger); }
+  .callout.warn h4 { color: var(--warn); }
+
+  /* Stats */
+  .stats { display: flex; gap: 32px; margin: 24px 0; flex-wrap: wrap; }
+  .stat { text-align: center; }
+  .stat .num { font-size: 2rem; font-weight: 700; color: var(--qt-green); display: block; }
+  .stat .label { font-size: 0.8rem; color: #888; }
+
+  /* Flow */
+  .flow { display: flex; align-items: center; gap: 8px; margin: 20px 0; flex-wrap: wrap; }
+  .flow-step { background: var(--qt-gray); border: 1px solid var(--qt-border); border-radius: 8px; padding: 10px 16px; font-size: 0.85rem; }
+  .flow-arrow { color: #999; font-size: 1.2rem; }
+
+  /* Footer */
+  footer { background: var(--qt-dark); color: #888; padding: 32px 0; font-size: 0.8rem; text-align: center; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1>COVESA VSS <span>Qt Library</span></h1>
+    <p class="subtitle">Design document for a Qt/QML binding library wrapping the COVESA Vehicle Signal Specification v6.0 using Qt Interface Framework and ifcodegen.</p>
+    <div class="meta">
+      <div><strong>Qt Version:</strong> 6.10.2</div>
+      <div><strong>VSS Version:</strong> 6.0</div>
+      <div><strong>Generator:</strong> ifcodegen (backend_simulator + frontend)</div>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="container">
+    <ul>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#architecture">Architecture</a></li>
+      <li><a href="#modules">Modules</a></li>
+      <li><a href="#codegen">Code Generation</a></li>
+      <li><a href="#integration">Integration</a></li>
+      <li><a href="#known-issues">Known Issues</a></li>
+      <li><a href="#api-reference">API Reference</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ─── Overview ─────────────────────────────────────── -->
+<section id="overview">
+  <div class="container">
+    <h2>Overview</h2>
+    <p>This library exposes the COVESA Vehicle Signal Specification as native Qt properties. Every VSS signal (speed, battery charge, HVAC temperature, etc.) becomes a <code>Q_PROPERTY</code> on a QObject-derived class, directly usable from C++ and QML with automatic change notifications.</p>
+
+    <div class="stats">
+      <div class="stat"><span class="num">12</span><span class="label">QML Modules</span></div>
+      <div class="stat"><span class="num">~50</span><span class="label">Interfaces</span></div>
+      <div class="stat"><span class="num">~300</span><span class="label">Properties</span></div>
+      <div class="stat"><span class="num">30+</span><span class="label">Enum Types</span></div>
+      <div class="stat"><span class="num">0</span><span class="label">Lines of Hand-Written C++</span></div>
+    </div>
+
+    <p>The entire library is generated from ~1,200 lines of QFace IDL and YAML annotations. No hand-written C++ exists for the signal classes. A simulator backend provides fake data for development without vehicle hardware. Production backends (CAN, SOME/IP, etc.) are swapped in at runtime without changing application code.</p>
+  </div>
+</section>
+
+<!-- ─── Architecture ─────────────────────────────────── -->
+<section id="architecture">
+  <div class="container">
+    <h2>Architecture</h2>
+
+    <h3>Runtime Layer Diagram</h3>
+    <div class="arch-diagram">
+      <div class="arch-row">
+        <div class="arch-box green">
+          <span class="label">QML Application</span>
+          <span class="detail">import COVESA.VSS.Vehicle<br>VehicleDynamics { id: d }<br>Text { text: d.speed }</span>
+        </div>
+      </div>
+      <div class="arch-arrow">&#x25BC;</div>
+      <div class="arch-row">
+        <div class="arch-box blue">
+          <span class="label">Frontend Libraries</span>
+          <span class="detail">Generated QObject classes with Q_PROPERTY<br>covesavss_vehicle_frontend, covesavss_powertrain_frontend, ...</span>
+        </div>
+      </div>
+      <div class="arch-arrow">&#x25BC; Qt IF Plugin Discovery</div>
+      <div class="arch-row">
+        <div class="arch-box gray">
+          <span class="label">Simulator Backend (dev)</span>
+          <span class="detail">In-memory defaults from YAML<br>covesavss_*_backend_simulator.dylib</span>
+        </div>
+        <div class="arch-box gray">
+          <span class="label">Production Backend (deploy)</span>
+          <span class="detail">CAN bus, SOME/IP, kuksa.val, ...<br>(not included, user-provided)</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>Build-Time Code Generation Pipeline</h3>
+    <div class="flow">
+      <div class="flow-step"><strong>.qface</strong> IDL files</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step"><strong>ifcodegen</strong></div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">C++ headers + sources</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">QML type registration</div>
+    </div>
+    <div class="flow">
+      <div class="flow-step"><strong>.yaml</strong> annotations</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step"><strong>ifcodegen</strong></div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">Simulation QML + JSON defaults</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">Backend plugin .dylib</div>
+    </div>
+
+    <h3>Module Dependency Chain</h3>
+    <pre><code><span class="cmt">Common (idl/common.qface)          — shared enums, no interfaces</span>
+  |
+  v
+<span class="kw">12 Domain Modules</span> (vehicle, powertrain, body, cabin, adas, chassis,
+                   driver, safety, exterior, service, connectivity,
+                   motionmanagement)
+  |
+  +-- Frontend lib   (covesavss_&lt;module&gt;_frontend)          links PUBLIC  covesavss_common
+  +-- Backend plugin (covesavss_&lt;module&gt;_backend_simulator)  links PRIVATE frontend</code></pre>
+  </div>
+</section>
+
+<!-- ─── Modules ──────────────────────────────────────── -->
+<section id="modules">
+  <div class="container">
+    <h2>QML Modules &amp; Interfaces</h2>
+    <p>Each module maps to a VSS domain branch. Zoned interfaces (marked with <span class="zoned-badge">zoned</span>) support Qt IF's zone model for multi-instance signals (e.g., per-seat, per-wheel).</p>
+
+    <div class="module-grid">
+
+      <div class="module-card">
+        <div class="module-name">Vehicle</div>
+        <div class="module-uri">import COVESA.VSS.Vehicle</div>
+        <ul>
+          <li>VehicleIdentification (11 props)</li>
+          <li>VehicleDynamics (7 props)</li>
+          <li>CurrentLocation (8 props)</li>
+          <li>LowVoltageBattery (4 props)</li>
+        </ul>
+      </div>
+
+      <div class="module-card">
+        <div class="module-name">Powertrain</div>
+        <div class="module-uri">import COVESA.VSS.Powertrain</div>
+        <ul>
+          <li>PowertrainStatus (3 props)</li>
+          <li>CombustionEngine (17 props)</li>
+          <li>Transmission (10 props)</li>
+          <li class="zoned">ElectricMotor (10 props)</li>
+          <li>TractionBattery (20 props)</li>
+          <li>FuelSystem (9 props)</li>
+        </ul>
+      </div>
+
+      <div class="module-card">
+        <div class="module-name">Body</div>
+        <div class="module-uri">import COVESA.VSS.Body</div>
+        <ul>
+          <li>BodyControl (6 props)</li>
+          <li>BodyLights (8 props)</li>
+          <li class="zoned">Windshield (3 props)</li>
+          <li class="zoned">BodyMirrors (4 props)</li>
+        </ul>
+      </div>
+
+      <div class="module-card">
+        <div class="module-name">Cabin</div>
+        <div class="module-uri">import COVESA.VSS.Cabin</div>
+        <ul>
+          <li class="zoned">CabinSeat (8 props)</li>
+          <li class="zoned">CabinHVAC (7 props)</li>
+          <li>CabinInfotainment (6 props)</li>
+          <li class="zoned">CabinDoor (4 props)</li>
+          <li>CabinLights (5 props)</li>
+        </ul>
+      </div>
+
+      <div class="module-card">
+        <div class="module-name">ADAS</div>
+        <div class="module-uri">import COVESA.VSS.ADAS</div>
+        <ul>
+          <li>ADASControl (6 props)</li>
+          <li>CruiseControl (5 props)</li>
+          <li class="zoned">ObstacleDetection (5 props)</li>
+        </ul>
+      </div>
+
+      <div class="module-card">
+        <div class="module-name">Chassis</div>
+        <div class="module-uri">import COVESA.VSS.Chassis</div>
+        <ul>
+          <li class="zoned">ChassisAxle (6 props)</li>
+          <li class="zoned">ChassisWheel (6 props)</li>
+          <li>ChassisSteering (4 props)</li>
+          <li>ChassisBrake (6 props)</li>
+        </ul>
+      </div>
+
+      <div class="module-card">
+        <div class="module-name">Driver</div>
+        <div class="module-uri">import COVESA.VSS.Driver</div>
+        <ul>
+          <li>DriverMonitoring (10 props)</li>
+        </ul>
+      </div>
+
+      <div class="module-card">
+        <div class="module-name">Safety</div>
+        <div class="module-uri">import COVESA.VSS.Safety</div>
+        <ul>
+          <li>CrashDetection (6 props)</li>
+          <li class="zoned">AirbagSystem (2 props)</li>
+          <li class="zoned">BeltSystem (2 props)</li>
+        </ul>
+      </div>
+
+      <div class="module-card">
+        <div class="module-name">Exterior</div>
+        <div class="module-uri">import COVESA.VSS.Exterior</div>
+        <ul>
+          <li>EnvironmentSensors (9 props)</li>
+        </ul>
+      </div>
+
+      <div class="module-card">
+        <div class="module-name">Service</div>
+        <div class="module-uri">import COVESA.VSS.Service</div>
+        <ul>
+          <li>ServiceStatus (10 props)</li>
+        </ul>
+      </div>
+
+      <div class="module-card">
+        <div class="module-name">Connectivity</div>
+        <div class="module-uri">import COVESA.VSS.Connectivity</div>
+        <ul>
+          <li>ConnectivityControl (11 props)</li>
+        </ul>
+      </div>
+
+      <div class="module-card">
+        <div class="module-name">MotionManagement</div>
+        <div class="module-uri">import COVESA.VSS.MotionManagement</div>
+        <ul>
+          <li>BrakeControl (4 props)</li>
+          <li>SteeringControl (4 props)</li>
+          <li class="zoned">SuspensionControl (4 props)</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <p style="font-size:0.85rem;color:#888;">Shared enums are defined in the <strong>Common</strong> module (<code>idl/common.qface</code>), linked automatically by all domain frontends. Common does not produce its own QML import.</p>
+  </div>
+</section>
+
+<!-- ─── Code Generation ──────────────────────────────── -->
+<section id="codegen">
+  <div class="container">
+    <h2>Code Generation Details</h2>
+
+    <h3>QFace IDL &rarr; Qt IF</h3>
+    <table>
+      <thead>
+        <tr><th>QFace Construct</th><th>Generated Output</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>interface Foo { }</code></td><td>C++ class <code>Foo : QIfAbstractFeature</code> + QML type <code>Foo { }</code></td></tr>
+        <tr><td><code>readonly real speed;</code></td><td><code>Q_PROPERTY(qreal speed READ speed NOTIFY speedChanged)</code></td></tr>
+        <tr><td><code>real chargeLimit;</code> (no readonly)</td><td>Getter + setter + change signal</td></tr>
+        <tr><td><code>@config: { zoned: true }</code></td><td>Zone-aware interface with <code>zone</code> property in QML</td></tr>
+        <tr><td><code>enum FuelType { ... }</code></td><td>C++ <code>enum</code> in generated QObject class</td></tr>
+      </tbody>
+    </table>
+
+    <h3>VSS &rarr; QFace Mapping</h3>
+    <table>
+      <thead>
+        <tr><th>VSS Concept</th><th>QFace Representation</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>sensor</code> (read-only data)</td><td><code>readonly</code> property</td></tr>
+        <tr><td><code>actuator</code> (read-write control)</td><td>Property without <code>readonly</code></td></tr>
+        <tr><td><code>attribute</code> (static metadata)</td><td><code>readonly</code> property</td></tr>
+        <tr><td><code>allowed</code> values</td><td>QFace <code>enum</code> type (currently mapped to <code>int</code>)</td></tr>
+        <tr><td><code>instances</code> (Row1/Row2, Left/Right)</td><td><code>@config: { zoned: true }</code> + zone list in YAML</td></tr>
+      </tbody>
+    </table>
+
+    <h3>CMake Targets per Module</h3>
+    <pre><code><span class="cmt"># Frontend: C++ classes + QML module</span>
+<span class="kw">qt_ifcodegen_add_qml_module</span>(covesavss_vehicle_frontend
+    IDL_FILES idl/vehicle.qface
+    TEMPLATE frontend
+    IDL_IMPORT_PATH idl
+)
+
+<span class="cmt"># Backend simulator plugin</span>
+<span class="kw">qt_ifcodegen_add_plugin</span>(covesavss_vehicle_backend_simulator
+    IDL_FILES idl/vehicle.qface
+    TEMPLATE backend_simulator
+    IDL_IMPORT_PATH idl
+)</code></pre>
+  </div>
+</section>
+
+<!-- ─── Integration ──────────────────────────────────── -->
+<section id="integration">
+  <div class="container">
+    <h2>Integration Guide</h2>
+
+    <h3>CMake</h3>
+    <pre><code><span class="kw">find_package</span>(Qt6 REQUIRED COMPONENTS InterfaceFramework)
+<span class="kw">target_link_libraries</span>(myapp PRIVATE
+    covesavss_vehicle_frontend
+    covesavss_powertrain_frontend
+    Qt::Quick
+)</code></pre>
+
+    <h3>QML Usage</h3>
+    <pre><code><span class="kw">import</span> QtQuick
+<span class="kw">import</span> QtQuick.Controls
+<span class="kw">import</span> COVESA.VSS.Vehicle
+<span class="kw">import</span> COVESA.VSS.Powertrain
+
+<span class="type">ApplicationWindow</span> {
+    <span class="type">VehicleDynamics</span> { <span class="kw">id</span>: dynamics }
+    <span class="type">TractionBattery</span> { <span class="kw">id</span>: battery }
+
+    <span class="type">Text</span> { text: <span class="str">"Speed: "</span> + dynamics.speed.toFixed(<span class="num">1</span>) + <span class="str">" km/h"</span> }
+    <span class="type">Text</span> { text: <span class="str">"Battery: "</span> + battery.stateOfCharge.toFixed(<span class="num">0</span>) + <span class="str">"%"</span> }
+}
+</code></pre>
+
+    <h3>Zoned Interfaces</h3>
+    <pre><code><span class="kw">import</span> COVESA.VSS.Cabin
+
+<span class="type">CabinHVAC</span> {
+    <span class="kw">id</span>: driverHvac
+    zone: <span class="str">"FrontLeft"</span>
+}
+<span class="type">Text</span> { text: <span class="str">"Driver temp: "</span> + driverHvac.targetTemperature + <span class="str">" C"</span> }
+</code></pre>
+
+    <h3>Backend Plugin Discovery</h3>
+    <p>Simulator plugins must be in an <code>interfaceframework/</code> directory adjacent to the executable. During development:</p>
+    <pre><code><span class="cmt"># Symlink all simulator plugins next to the app binary</span>
+mkdir -p build/examples/dashboard/interfaceframework
+ln -sf $(find build/src -name <span class="str">"libcovesavss_*_backend_simulator.dylib"</span>) \
+       build/examples/dashboard/interfaceframework/</code></pre>
+    <p>For production, replace the simulator <code>.dylib</code> files with your real backend plugin. No application code changes required.</p>
+  </div>
+</section>
+
+<!-- ─── Known Issues ─────────────────────────────────── -->
+<section id="known-issues">
+  <div class="container">
+    <h2>Known Issues</h2>
+
+    <div class="callout">
+      <h4>Qt IF 6.10.2: Cross-Module Enum Stack Overflow</h4>
+      <p>Using a cross-module enum type (e.g., <code>Common.RoadSurfaceCondition</code>) as a property type in a domain interface causes a stack overflow at runtime. The <code>QIfSimulationEngine</code> recursion guard fails to break the C++ &harr; QML call cycle for enum types from other modules.</p>
+      <p style="margin-top:12px;"><strong>Workaround:</strong> All 36 cross-module enum properties use <code>int</code> instead. Enum definitions are preserved in <code>common.qface</code> for documentation. See <code>bugs/qtif-cross-module-enum-stackoverflow/</code> for the full analysis and investigation plan.</p>
+    </div>
+
+    <div class="callout warn">
+      <h4>ifcodegen: Integer Defaults for Enum Properties</h4>
+      <p>Specifying integer defaults for enum-typed properties in YAML files crashes the <code>backend_simulator</code> template at configure time with <code>AttributeError: 'int' object has no attribute 'split'</code>. Enum defaults must be omitted entirely.</p>
+    </div>
+
+    <h3>Naming Constraints</h3>
+    <table>
+      <thead>
+        <tr><th>Constraint</th><th>Reason</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Interface name &ne; module last segment</td>
+          <td>Generated header self-include loop</td>
+          <td><code>PowertrainStatus</code> instead of <code>Powertrain</code></td>
+        </tr>
+        <tr>
+          <td>QFace reserved words forbidden as property names</td>
+          <td>Parser fails</td>
+          <td><code>vehicleModel</code> instead of <code>model</code></td>
+        </tr>
+        <tr>
+          <td>Enum values globally unique within module</td>
+          <td>Generated as plain <code>enum</code>, not <code>enum class</code></td>
+          <td><code>PowertrainUnknown</code>, <code>FuelUnknown</code> (prefixed)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ─── API Reference ────────────────────────────────── -->
+<section id="api-reference">
+  <div class="container">
+    <h2>API Reference (Selected Interfaces)</h2>
+
+    <h3>VehicleDynamics <span style="font-weight:normal;color:#888;">— COVESA.VSS.Vehicle</span></h3>
+    <table>
+      <thead><tr><th>Property</th><th>Type</th><th>Access</th><th>VSS Path</th></tr></thead>
+      <tbody>
+        <tr><td>speed</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Vehicle.Speed</td></tr>
+        <tr><td>traveledDistance</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Vehicle.TraveledDistance</td></tr>
+        <tr><td>traveledDistanceSinceStart</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Vehicle.TraveledDistanceSinceStart</td></tr>
+        <tr><td>tripMeterReading</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Vehicle.TripMeterReading</td></tr>
+        <tr><td>isMoving</td><td class="type">bool</td><td><span class="readonly">readonly</span></td><td>Vehicle.IsMoving</td></tr>
+        <tr><td>averageSpeed</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Vehicle.AverageSpeed</td></tr>
+        <tr><td>currentOverallWeight</td><td class="type">int</td><td><span class="readonly">readonly</span></td><td>Vehicle.CurrentOverallWeight</td></tr>
+      </tbody>
+    </table>
+
+    <h3>TractionBattery <span style="font-weight:normal;color:#888;">— COVESA.VSS.Powertrain</span></h3>
+    <table>
+      <thead><tr><th>Property</th><th>Type</th><th>Access</th><th>VSS Path</th></tr></thead>
+      <tbody>
+        <tr><td>stateOfCharge</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Powertrain.TractionBattery.StateOfCharge.Current</td></tr>
+        <tr><td>stateOfHealth</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Powertrain.TractionBattery.StateOfHealth</td></tr>
+        <tr><td>currentVoltage</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Powertrain.TractionBattery.CurrentVoltage</td></tr>
+        <tr><td>currentCurrent</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Powertrain.TractionBattery.CurrentCurrent</td></tr>
+        <tr><td>currentPower</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Powertrain.TractionBattery.CurrentPower</td></tr>
+        <tr><td>temperature</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Powertrain.TractionBattery.Temperature</td></tr>
+        <tr><td>isCharging</td><td class="type">bool</td><td><span class="readonly">readonly</span></td><td>Powertrain.TractionBattery.Charging.IsCharging</td></tr>
+        <tr><td>chargeLimit</td><td class="type">real</td><td><span class="writable">writable</span></td><td>Powertrain.TractionBattery.Charging.ChargeLimit</td></tr>
+        <tr><td>chargingRate</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Powertrain.TractionBattery.Charging.ChargeRate</td></tr>
+        <tr><td>grossCapacity</td><td class="type">int</td><td><span class="readonly">readonly</span></td><td>Powertrain.TractionBattery.GrossCapacity</td></tr>
+        <tr><td>netCapacity</td><td class="type">int</td><td><span class="readonly">readonly</span></td><td>Powertrain.TractionBattery.NetCapacity</td></tr>
+      </tbody>
+    </table>
+
+    <h3>CombustionEngine <span style="font-weight:normal;color:#888;">— COVESA.VSS.Powertrain</span></h3>
+    <table>
+      <thead><tr><th>Property</th><th>Type</th><th>Access</th><th>VSS Path</th></tr></thead>
+      <tbody>
+        <tr><td>speed</td><td class="type">int</td><td><span class="readonly">readonly</span></td><td>Powertrain.CombustionEngine.Speed (RPM)</td></tr>
+        <tr><td>isRunning</td><td class="type">bool</td><td><span class="readonly">readonly</span></td><td>Powertrain.CombustionEngine.IsRunning</td></tr>
+        <tr><td>power</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Powertrain.CombustionEngine.Power</td></tr>
+        <tr><td>torque</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Powertrain.CombustionEngine.Torque</td></tr>
+        <tr><td>engineCoolantTemperature</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Powertrain.CombustionEngine.ECT</td></tr>
+        <tr><td>tps</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Powertrain.CombustionEngine.TPS</td></tr>
+        <tr><td>maf</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Powertrain.CombustionEngine.MAF</td></tr>
+        <tr><td>displacement</td><td class="type">int</td><td><span class="readonly">readonly</span></td><td>Powertrain.CombustionEngine.Displacement</td></tr>
+        <tr><td>numberOfCylinders</td><td class="type">int</td><td><span class="readonly">readonly</span></td><td>Powertrain.CombustionEngine.NumberOfCylinders</td></tr>
+      </tbody>
+    </table>
+
+    <h3>EnvironmentSensors <span style="font-weight:normal;color:#888;">— COVESA.VSS.Exterior</span></h3>
+    <table>
+      <thead><tr><th>Property</th><th>Type</th><th>Access</th><th>VSS Path</th></tr></thead>
+      <tbody>
+        <tr><td>ambientTemperature</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Exterior.AirTemperature</td></tr>
+        <tr><td>humidity</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Exterior.Humidity</td></tr>
+        <tr><td>atmosphericPressure</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Exterior.AtmosphericPressure</td></tr>
+        <tr><td>visibility</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Exterior.Visibility</td></tr>
+        <tr><td>windSpeed</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Exterior.WindSpeed</td></tr>
+        <tr><td>windDirection</td><td class="type">real</td><td><span class="readonly">readonly</span></td><td>Exterior.WindDirection</td></tr>
+        <tr><td>isRaining</td><td class="type">bool</td><td><span class="readonly">readonly</span></td><td>Exterior.IsRaining</td></tr>
+      </tbody>
+    </table>
+
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    COVESA VSS Qt Library &mdash; Design Document &mdash; Built with Qt Interface Framework 6.10.2
+  </div>
+</footer>
+
+</body>
+</html>

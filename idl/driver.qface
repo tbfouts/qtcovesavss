@@ -1,0 +1,30 @@
+module COVESA.VSS.Driver 1.0
+
+import Common 1.0
+
+/**
+ * Driver monitoring sensors from VSS Vehicle.Driver branch.
+ * Covers biometric data, attentiveness, fatigue, and identification.
+ */
+interface DriverMonitoring {
+    /** VSS: Vehicle.Driver.HeartRate */
+    readonly real heartRate;
+    /** VSS: Vehicle.Driver.IsAttentive */
+    readonly bool isAttentive;
+    /** VSS: Vehicle.Driver.AttentivenessLevel */
+    readonly real attentivenessLevel;
+    /** VSS: Vehicle.Driver.Fatigue.IsWarning */
+    readonly bool isFatigued;
+    /** VSS: Vehicle.Driver.Fatigue.Level */
+    readonly real fatigueLevel;
+    /** VSS: Vehicle.Driver.IsEyesOnRoad */
+    readonly bool isEyesOnRoad;
+    /** VSS: Vehicle.Driver.IsHandsOnWheel */
+    readonly bool isHandsOnWheel;
+    /** VSS: Vehicle.Driver.DistractionLevel */
+    readonly int distractionLevel;
+    /** VSS: Vehicle.Driver.Identifier.Subject */
+    readonly string identifierSubject;
+    /** VSS: Vehicle.Driver.Identifier.Issuer */
+    readonly string identifierIssuer;
+}

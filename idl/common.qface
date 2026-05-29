@@ -1,0 +1,333 @@
+module Common 1.0
+
+/** Powertrain type classification per VSS Vehicle.Powertrain.Type */
+enum PowertrainType {
+    PowertrainUnknown = 0,
+    PowertrainCombustion = 1,
+    PowertrainHybrid = 2,
+    PowertrainElectric = 3
+}
+
+/** Fuel type per VSS Vehicle.Powertrain.FuelSystem.SupportedFuelTypes */
+enum FuelType {
+    FuelUnknown = 0,
+    FuelGasoline = 1,
+    FuelDiesel = 2,
+    FuelE85 = 3,
+    FuelCNG = 4,
+    FuelLPG = 5,
+    FuelHydrogen = 6,
+    FuelElectric = 7
+}
+
+/** Transmission gear type per VSS Vehicle.Powertrain.Transmission.Type */
+enum TransmissionGearType {
+    GearUnknown = 0,
+    GearManual = 1,
+    GearAutomatic = 2,
+    GearCVT = 3
+}
+
+/** Transmission drive type per VSS Vehicle.Powertrain.Transmission.DriveType */
+enum TransmissionDriveType {
+    DriveUnknown = 0,
+    DriveFWD = 1,
+    DriveRWD = 2,
+    DriveAWD = 3
+}
+
+/** Transmission performance mode */
+enum TransmissionPerformanceMode {
+    PerfNormal = 0,
+    PerfSport = 1,
+    PerfEconomy = 2,
+    PerfSnow = 3,
+    PerfRain = 4
+}
+
+/** Wiper mode per VSS Vehicle.Body.Windshield.Front.Wiping.Mode */
+enum WiperMode {
+    WiperOff = 0,
+    WiperSlow = 1,
+    WiperMedium = 2,
+    WiperFast = 3,
+    WiperInterval = 4,
+    WiperRainSensor = 5
+}
+
+/** Light switch state per VSS Vehicle.Body.Lights.LightSwitch */
+enum LightSwitch {
+    LightOff = 0,
+    LightPosition = 1,
+    LightDaytime = 2,
+    LightLowBeam = 3,
+    LightHighBeam = 4,
+    LightAuto = 5
+}
+
+/** GNSS fix type per VSS Vehicle.CurrentLocation.GNSSReceiver.FixType */
+enum GNSSFixType {
+    GNSSNone = 0,
+    GNSSFix2D = 1,
+    GNSSFix3D = 2,
+    GNSSFix3DSBAS = 3,
+    GNSSFix3DDGPS = 4,
+    GNSSFix3DPPS = 5,
+    GNSSRTKFloat = 6,
+    GNSSRTKInteger = 7
+}
+
+/** Low voltage battery system state */
+enum LowVoltageSystemState {
+    LVUndefined = 0,
+    LVStart = 1,
+    LVOn = 2,
+    LVOff = 3
+}
+
+/** Recirculation mode per VSS Vehicle.Cabin.HVAC */
+enum RecirculationMode {
+    RecircOff = 0,
+    RecircOn = 1,
+    RecircAuto = 2
+}
+
+/** Seat occupancy status */
+enum SeatOccupancyStatus {
+    SeatEmpty = 0,
+    SeatAdult = 1,
+    SeatChild = 2,
+    SeatUnknown = 3
+}
+
+/** DayNight mode */
+enum DayNightMode {
+    ModeDay = 0,
+    ModeNight = 1,
+    ModeAuto = 2
+}
+
+/** Autonomy level per SAE J3016 */
+enum AutonomyLevel {
+    AutonomyNone = 0,
+    AutonomyDriverAssist = 1,
+    AutonomyPartial = 2,
+    AutonomyConditional = 3,
+    AutonomyHigh = 4,
+    AutonomyFull = 5
+}
+
+/** Road surface condition */
+enum RoadSurfaceCondition {
+    RoadUnknown = 0,
+    RoadDry = 1,
+    RoadWet = 2,
+    RoadIce = 3,
+    RoadSnow = 4
+}
+
+/** Obstacle warning level */
+enum ObstacleWarningLevel {
+    ObstacleNone = 0,
+    ObstacleLow = 1,
+    ObstacleMedium = 2,
+    ObstacleHigh = 3,
+    ObstacleCritical = 4
+}
+
+/** Door position state */
+enum DoorState {
+    DoorClosed = 0,
+    DoorOpen = 1,
+    DoorAjar = 2
+}
+
+/** Window position state */
+enum WindowState {
+    WindowClosed = 0,
+    WindowOpen = 1,
+    WindowIntermediate = 2
+}
+
+/** Mirror tilt direction */
+enum MirrorTiltDirection {
+    MirrorNeutral = 0,
+    MirrorUp = 1,
+    MirrorDown = 2,
+    MirrorLeft = 3,
+    MirrorRight = 4
+}
+
+/** Combustion engine state */
+enum EngineState {
+    EngineUnknown = 0,
+    EngineOff = 1,
+    EngineIdle = 2,
+    EngineRunning = 3,
+    EngineCranking = 4
+}
+
+/** Electric motor operating mode */
+enum ElectricMotorMode {
+    MotorUnknown = 0,
+    MotorPower = 1,
+    MotorRegen = 2,
+    MotorOff = 3
+}
+
+/** Battery charging status */
+enum ChargingStatus {
+    ChargeUnknown = 0,
+    ChargeNot = 1,
+    ChargeActive = 2,
+    ChargeComplete = 3,
+    ChargeError = 4
+}
+
+/** Battery charge plug type */
+enum ChargePlugType {
+    PlugUnknown = 0,
+    PlugType1 = 1,
+    PlugType2 = 2,
+    PlugCCS1 = 3,
+    PlugCCS2 = 4,
+    PlugCHAdeMO = 5,
+    PlugTesla = 6
+}
+
+/** HVAC fan direction */
+enum HVACFanDirection {
+    FanOff = 0,
+    FanFloor = 1,
+    FanFloorFace = 2,
+    FanFace = 3,
+    FanFaceWindshield = 4,
+    FanDefrost = 5
+}
+
+/** Infotainment media source */
+enum MediaSource {
+    MediaUnknown = 0,
+    MediaRadio = 1,
+    MediaUSB = 2,
+    MediaBluetooth = 3,
+    MediaAUX = 4,
+    MediaStreaming = 5
+}
+
+/** Brake fluid level warning */
+enum FluidLevelWarning {
+    FluidNormal = 0,
+    FluidLow = 1,
+    FluidCritical = 2
+}
+
+/** Turn signal state */
+enum TurnSignalState {
+    TurnOff = 0,
+    TurnLeft = 1,
+    TurnRight = 2,
+    TurnHazard = 3
+}
+
+/** Connectivity status */
+enum ConnectivityStatus {
+    ConnDisconnected = 0,
+    ConnConnecting = 1,
+    ConnConnected = 2,
+    ConnError = 3
+}
+
+/** Service status */
+enum ServiceStatus {
+    SvcUnknown = 0,
+    SvcOk = 1,
+    SvcDue = 2,
+    SvcOverdue = 3
+}
+
+/** Crash status */
+enum CrashStatus {
+    CrashNone = 0,
+    CrashFront = 1,
+    CrashRear = 2,
+    CrashSideLeft = 3,
+    CrashSideRight = 4,
+    CrashRollover = 5,
+    CrashMultiple = 6
+}
+
+/** Airbag deployment status */
+enum AirbagStatus {
+    AirbagReady = 0,
+    AirbagDeployed = 1,
+    AirbagError = 2
+}
+
+/** Steering wheel position */
+enum SteeringWheelPosition {
+    SteerLeft = 0,
+    SteerRight = 1
+}
+
+/** Parking brake type */
+enum ParkingBrakeType {
+    ParkBrakeNone = 0,
+    ParkBrakeManual = 1,
+    ParkBrakeElectric = 2
+}
+
+/** ABS status */
+enum ABSStatus {
+    ABSInactive = 0,
+    ABSActive = 1,
+    ABSError = 2
+}
+
+/** ESC status (electronic stability control) */
+enum ESCStatus {
+    ESCInactive = 0,
+    ESCActive = 1,
+    ESCError = 2
+}
+
+/** TCS status (traction control system) */
+enum TCSStatus {
+    TCSInactive = 0,
+    TCSActive = 1,
+    TCSError = 2
+}
+
+/** Cruise control mode */
+enum CruiseControlMode {
+    CruiseOff = 0,
+    CruiseOn = 1,
+    CruiseResume = 2,
+    CruiseSet = 3,
+    CruiseAdaptive = 4
+}
+
+/** Lane departure warning state */
+enum LaneDepartureState {
+    LaneOff = 0,
+    LaneIdle = 1,
+    LaneWarnLeft = 2,
+    LaneWarnRight = 3,
+    LaneCorrecting = 4
+}
+
+/** Blind spot warning state */
+enum BlindSpotState {
+    BlindOff = 0,
+    BlindIdle = 1,
+    BlindWarnLeft = 2,
+    BlindWarnRight = 3
+}
+
+/** Suspension mode */
+enum SuspensionMode {
+    SuspNormal = 0,
+    SuspComfort = 1,
+    SuspSport = 2,
+    SuspOffRoad = 3
+}

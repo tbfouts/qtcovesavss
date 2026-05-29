@@ -1,0 +1,28 @@
+module COVESA.VSS.Exterior 1.0
+
+import Common 1.0
+
+/**
+ * Exterior environment sensors from VSS Vehicle.Exterior branch.
+ * Covers weather conditions, road surface, and ambient measurements.
+ */
+interface EnvironmentSensors {
+    /** VSS: Vehicle.Exterior.AirTemperature */
+    readonly real ambientTemperature;
+    /** VSS: Vehicle.Exterior.Humidity */
+    readonly real humidity;
+    /** VSS: Vehicle.Exterior.AtmosphericPressure */
+    readonly real atmosphericPressure;
+    /** VSS: Vehicle.Exterior.Visibility */
+    readonly real visibility;
+    /** VSS: Vehicle.Exterior.LightIntensity */
+    readonly real lightIntensity;
+    /** VSS: Vehicle.Exterior.RoadCondition */
+    readonly Common.RoadSurfaceCondition roadCondition;
+    /** VSS: Vehicle.Exterior.WindSpeed */
+    readonly real windSpeed;
+    /** VSS: Vehicle.Exterior.WindDirection */
+    readonly real windDirection;
+    /** VSS: Vehicle.Exterior.IsRaining */
+    readonly bool isRaining;
+}
