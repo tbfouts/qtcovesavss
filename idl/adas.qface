@@ -1,0 +1,91 @@
+module COVESA.VSS.ADAS 1.0
+
+import Common 1.0
+
+/**
+ * ADAS core controls and safety system status from VSS Vehicle.ADAS branch.
+ * Includes AEB, EBD, ESC, TCS, lane departure, and blind spot detection.
+ */
+interface ADASControl {
+    /** VSS: Vehicle.ADAS.ActiveAutonomyLevel */
+    readonly Common.AutonomyLevel activeAutonomyLevel;
+    /** VSS: Vehicle.ADAS.SupportedAutonomyLevel */
+    readonly Common.AutonomyLevel supportedAutonomyLevel;
+
+    /** VSS: Vehicle.ADAS.AEB.IsEnabled */
+    bool isAEBEnabled;
+    /** VSS: Vehicle.ADAS.AEB.IsActive */
+    readonly bool isAEBActive;
+    /** VSS: Vehicle.ADAS.AEB.IsError */
+    readonly bool isAEBError;
+
+    /** VSS: Vehicle.ADAS.EBD.IsEnabled */
+    bool isEBDEnabled;
+    /** VSS: Vehicle.ADAS.EBD.IsActive */
+    readonly bool isEBDActive;
+    /** VSS: Vehicle.ADAS.EBD.IsError */
+    readonly bool isEBDError;
+
+    /** VSS: Vehicle.ADAS.ESC.IsEnabled */
+    bool isESCEnabled;
+    /** VSS: Vehicle.ADAS.ESC.IsActive */
+    readonly bool isESCActive;
+    /** VSS: Vehicle.ADAS.ESC.IsError */
+    readonly bool isESCError;
+
+    /** VSS: Vehicle.ADAS.TCS.IsEnabled */
+    bool isTCSEnabled;
+    /** VSS: Vehicle.ADAS.TCS.IsActive */
+    readonly bool isTCSActive;
+    /** VSS: Vehicle.ADAS.TCS.IsError */
+    readonly bool isTCSError;
+
+    /** VSS: Vehicle.ADAS.LaneDepartureDetection.State */
+    readonly Common.LaneDepartureState laneDepartureState;
+    /** VSS: Vehicle.ADAS.LaneDepartureDetection.IsEnabled */
+    bool isLaneDepartureEnabled;
+    /** VSS: Vehicle.ADAS.LaneDepartureDetection.IsWarning */
+    readonly bool isLaneDepartureWarning;
+
+    /** VSS: Vehicle.ADAS.BlindSpotDetection.State */
+    readonly Common.BlindSpotState blindSpotState;
+    /** VSS: Vehicle.ADAS.BlindSpotDetection.IsEnabled */
+    bool isBlindSpotEnabled;
+}
+
+/**
+ * Cruise control system from VSS Vehicle.ADAS.CruiseControl branch.
+ * Includes adaptive cruise control properties.
+ */
+interface CruiseControl {
+    /** VSS: Vehicle.ADAS.CruiseControl.IsEnabled */
+    bool isEnabled;
+    /** VSS: Vehicle.ADAS.CruiseControl.IsActive */
+    readonly bool isActive;
+    /** VSS: Vehicle.ADAS.CruiseControl.IsError */
+    readonly bool isError;
+    /** VSS: Vehicle.ADAS.CruiseControl.SpeedSet */
+    real speedSet;
+    /** VSS: Vehicle.ADAS.CruiseControl.Mode */
+    readonly Common.CruiseControlMode mode;
+    /** VSS: Vehicle.ADAS.CruiseControl.TargetGap */
+    real targetGap;
+    /** VSS: Vehicle.ADAS.CruiseControl.IsAdaptive */
+    readonly bool isAdaptive;
+}
+
+/**
+ * Obstacle detection per zone from VSS Vehicle.ADAS.ObstacleDetection branch.
+ * Zoned: Front, Rear, Left, Right.
+ */
+@config: { zoned: true }
+interface ObstacleDetection {
+    /** VSS: Vehicle.ADAS.ObstacleDetection.*.Distance */
+    readonly real distance;
+    /** VSS: Vehicle.ADAS.ObstacleDetection.*.WarningLevel */
+    readonly Common.ObstacleWarningLevel warningLevel;
+    /** VSS: Vehicle.ADAS.ObstacleDetection.*.IsEnabled */
+    bool isEnabled;
+    /** VSS: Vehicle.ADAS.ObstacleDetection.*.IsDetected */
+    readonly bool isDetected;
+}

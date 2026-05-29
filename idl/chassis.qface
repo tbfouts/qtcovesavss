@@ -1,0 +1,76 @@
+module COVESA.VSS.Chassis 1.0
+
+import Common 1.0
+
+/**
+ * Chassis axle data from VSS Vehicle.Chassis.Axle branch.
+ * Zoned: Front, Rear.
+ */
+@config: { zoned: true }
+interface ChassisAxle {
+    /** VSS: Vehicle.Chassis.Axle.*.WheelCount */
+    readonly int wheelCount;
+    /** VSS: Vehicle.Chassis.Axle.*.WheelDiameter */
+    readonly real wheelDiameter;
+    /** VSS: Vehicle.Chassis.Axle.*.WheelWidth */
+    readonly real wheelWidth;
+    /** VSS: Vehicle.Chassis.Axle.*.TireDiameter */
+    readonly real tireDiameter;
+    /** VSS: Vehicle.Chassis.Axle.*.TireWidth */
+    readonly real tireWidth;
+    /** VSS: Vehicle.Chassis.Axle.*.TireAspectRatio */
+    readonly int tireAspectRatio;
+}
+
+/**
+ * Per-wheel tire and brake data from VSS Vehicle.Chassis.Axle.*.Wheel branch.
+ * Zoned: FrontLeft, FrontRight, RearLeft, RearRight.
+ */
+@config: { zoned: true }
+interface ChassisWheel {
+    /** VSS: Vehicle.Chassis.Axle.*.Wheel.*.Tire.Pressure */
+    readonly real tirePressure;
+    /** VSS: Vehicle.Chassis.Axle.*.Wheel.*.Tire.IsPressureLow */
+    readonly bool isPressureLow;
+    /** VSS: Vehicle.Chassis.Axle.*.Wheel.*.Tire.Temperature */
+    readonly real tireTemperature;
+    /** VSS: Vehicle.Chassis.Axle.*.Wheel.*.Brake.PadWear */
+    readonly real brakeWear;
+    /** VSS: Vehicle.Chassis.Axle.*.Wheel.*.Brake.IsFluidLevelLow */
+    readonly bool isBrakeFluidLevelLow;
+    /** VSS: Vehicle.Chassis.Axle.*.Wheel.*.Speed */
+    readonly real speed;
+}
+
+/**
+ * Steering wheel data from VSS Vehicle.Chassis.SteeringWheel branch.
+ * All properties are sensors (readonly).
+ */
+interface ChassisSteering {
+    /** VSS: Vehicle.Chassis.SteeringWheel.Angle */
+    readonly real steeringWheelAngle;
+    /** VSS: Vehicle.Chassis.SteeringWheel.Tilt */
+    readonly int steeringWheelTilt;
+    /** VSS: Vehicle.Chassis.SteeringWheel.Extension */
+    readonly int steeringWheelExtension;
+    /** VSS: Vehicle.Chassis.SteeringWheel.Position */
+    readonly Common.SteeringWheelPosition position;
+}
+
+/**
+ * Brake system data from VSS Vehicle.Chassis.Brake and Vehicle.Chassis.ParkingBrake branches.
+ */
+interface ChassisBrake {
+    /** VSS: Vehicle.Chassis.Brake.PedalPosition */
+    readonly int pedalPosition;
+    /** VSS: Vehicle.Chassis.Brake.IsDriverBraking */
+    readonly bool isDriverBraking;
+    /** VSS: Vehicle.Chassis.Brake.ABS.Status */
+    readonly Common.ABSStatus absStatus;
+    /** VSS: Vehicle.Chassis.Brake.FluidLevel */
+    readonly Common.FluidLevelWarning fluidLevelWarning;
+    /** VSS: Vehicle.Chassis.ParkingBrake.IsEngaged */
+    bool isParkingBrakeEngaged;
+    /** VSS: Vehicle.Chassis.ParkingBrake.Type */
+    readonly Common.ParkingBrakeType parkingBrakeType;
+}

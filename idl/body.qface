@@ -1,0 +1,85 @@
+module COVESA.VSS.Body 1.0
+
+import Common 1.0
+
+/**
+ * Body control sensors and actuators from VSS Vehicle.Body branch.
+ * Covers spoiler, hood, trunk, and rain detection.
+ */
+interface BodyControl {
+    /** VSS: Vehicle.Body.RearMainSpoilerPosition */
+    readonly int rearMainSpoilerPosition;
+    /** VSS: Vehicle.Body.Lights.DirectionIndicator */
+    readonly Common.TurnSignalState turnSignalState;
+    /** VSS: Vehicle.Body.Hood.IsOpen */
+    readonly bool isHoodOpen;
+    /** VSS: Vehicle.Body.Trunk.IsOpen */
+    readonly bool isTrunkOpen;
+    /** VSS: Vehicle.Body.Trunk.IsLocked */
+    bool isTrunkLocked;
+    /** VSS: Vehicle.Body.Raindetection.Intensity */
+    readonly real rainIntensity;
+}
+
+/**
+ * Exterior and interior lighting control from VSS Vehicle.Body.Lights branch.
+ * Mix of actuators (switches) and sensors (status indicators).
+ */
+interface BodyLights {
+    /** VSS: Vehicle.Body.Lights.LightSwitch */
+    Common.LightSwitch lightSwitch;
+    /** VSS: Vehicle.Body.Lights.Beam.High.IsOn */
+    bool isHighBeamOn;
+    /** VSS: Vehicle.Body.Lights.Beam.Low.IsOn */
+    bool isLowBeamOn;
+    /** VSS: Vehicle.Body.Lights.Fog.Front.IsOn */
+    bool isFogFrontOn;
+    /** VSS: Vehicle.Body.Lights.Fog.Rear.IsOn */
+    bool isFogRearOn;
+    /** VSS: Vehicle.Body.Lights.Running.IsOn */
+    readonly bool isRunningOn;
+    /** VSS: Vehicle.Body.Lights.Parking.IsOn */
+    bool isParkingOn;
+    /** VSS: Vehicle.Body.Lights.Brake.IsOn */
+    readonly bool isBrakeOn;
+    /** VSS: Vehicle.Body.Lights.Hazard.IsOn */
+    bool isHazardOn;
+    /** VSS: Vehicle.Body.Lights.Backup.IsOn */
+    readonly bool isBackupOn;
+    /** VSS: Vehicle.Body.Lights.Interior.Brightness */
+    int interiorBrightness;
+}
+
+/**
+ * Windshield wipers, washer fluid, and heating from VSS Vehicle.Body.Windshield branch.
+ * Zoned: Front, Rear.
+ */
+@config: { zoned: true }
+interface Windshield {
+    /** VSS: Vehicle.Body.Windshield.*.Wiping.Mode */
+    Common.WiperMode wiperMode;
+    /** VSS: Vehicle.Body.Windshield.*.Wiping.WiperWear */
+    readonly int wiperWearLevel;
+    /** VSS: Vehicle.Body.Windshield.*.WasherFluid.IsLevelLow */
+    readonly bool isWiperFluidLevelLow;
+    /** VSS: Vehicle.Body.Windshield.*.Heating.Status */
+    bool isHeatingOn;
+    /** VSS: Vehicle.Body.Windshield.*.Heating.IsOn */
+    readonly bool isWindshieldHeatingOn;
+}
+
+/**
+ * Side mirror control from VSS Vehicle.Body.Mirrors branch.
+ * Zoned: Left, Right.
+ */
+@config: { zoned: true }
+interface BodyMirrors {
+    /** VSS: Vehicle.Body.Mirrors.*.Tilt */
+    int tilt;
+    /** VSS: Vehicle.Body.Mirrors.*.Pan */
+    int pan;
+    /** VSS: Vehicle.Body.Mirrors.*.IsHeatingOn */
+    bool isHeatingOn;
+    /** VSS: Vehicle.Body.Mirrors.*.IsFolded */
+    bool isFolded;
+}

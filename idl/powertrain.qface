@@ -1,0 +1,182 @@
+module COVESA.VSS.Powertrain 1.0
+
+import Common 1.0
+
+/**
+ * Top-level powertrain data from VSS Vehicle.Powertrain branch.
+ */
+interface PowertrainStatus {
+    /** VSS: Vehicle.Powertrain.Type */
+    readonly Common.PowertrainType type;
+    /** VSS: Vehicle.Powertrain.AccumulatedBrakingEnergy */
+    readonly real accumulatedBrakingEnergy;
+    /** VSS: Vehicle.Powertrain.Range */
+    readonly real range;
+}
+
+/**
+ * Internal combustion engine data from VSS Vehicle.Powertrain.CombustionEngine branch.
+ * All properties are sensors (readonly).
+ */
+interface CombustionEngine {
+    /** VSS: Vehicle.Powertrain.CombustionEngine.EngineState */
+    readonly Common.EngineState engineState;
+    /** VSS: Vehicle.Powertrain.CombustionEngine.Speed */
+    readonly int speed;
+    /** VSS: Vehicle.Powertrain.CombustionEngine.EngineHours */
+    readonly int engineHours;
+    /** VSS: Vehicle.Powertrain.CombustionEngine.ECT */
+    readonly real engineCoolantTemperature;
+    /** VSS: Vehicle.Powertrain.CombustionEngine.EOT */
+    readonly real engineOilTemperature;
+    /** VSS: Vehicle.Powertrain.CombustionEngine.OilPressure */
+    readonly real engineOilPressure;
+    /** VSS: Vehicle.Powertrain.CombustionEngine.OilLevel */
+    readonly int engineOilLevel;
+    /** VSS: Vehicle.Powertrain.CombustionEngine.Power */
+    readonly real power;
+    /** VSS: Vehicle.Powertrain.CombustionEngine.Torque */
+    readonly real torque;
+    /** VSS: Vehicle.Powertrain.CombustionEngine.Displacement */
+    readonly int displacement;
+    /** VSS: Vehicle.Powertrain.CombustionEngine.Configuration */
+    readonly string configuration;
+    /** VSS: Vehicle.Powertrain.CombustionEngine.NumberOfCylinders */
+    readonly int numberOfCylinders;
+    /** VSS: Vehicle.Powertrain.CombustionEngine.MAF */
+    readonly real maf;
+    /** VSS: Vehicle.Powertrain.CombustionEngine.MAP */
+    readonly int manifoldAbsolutePressure;
+    /** VSS: Vehicle.Powertrain.CombustionEngine.TPS */
+    readonly real tps;
+    /** VSS: Vehicle.Powertrain.CombustionEngine.IsRunning */
+    readonly bool isRunning;
+    /** VSS: Vehicle.Powertrain.CombustionEngine.IdleHours */
+    readonly int idleHours;
+}
+
+/**
+ * Transmission data from VSS Vehicle.Powertrain.Transmission branch.
+ */
+interface Transmission {
+    /** VSS: Vehicle.Powertrain.Transmission.Type */
+    readonly Common.TransmissionGearType type;
+    /** VSS: Vehicle.Powertrain.Transmission.GearCount */
+    readonly int gearCount;
+    /** VSS: Vehicle.Powertrain.Transmission.DriveType */
+    readonly Common.TransmissionDriveType driveType;
+    /** VSS: Vehicle.Powertrain.Transmission.CurrentGear */
+    readonly int currentGear;
+    /** VSS: Vehicle.Powertrain.Transmission.SelectedGear */
+    readonly int selectedGear;
+    /** VSS: Vehicle.Powertrain.Transmission.IsParkLockEngaged */
+    readonly bool isParkLockEngaged;
+    /** VSS: Vehicle.Powertrain.Transmission.PerformanceMode - actuator */
+    Common.TransmissionPerformanceMode performanceMode;
+    /** VSS: Vehicle.Powertrain.Transmission.Temperature */
+    readonly real temperature;
+    /** VSS: Vehicle.Powertrain.Transmission.ClutchWear */
+    readonly real clutchWear;
+    /** VSS: Vehicle.Powertrain.Transmission.TravelledDistance */
+    readonly real travelledDistance;
+}
+
+/**
+ * Electric motor data from VSS Vehicle.Powertrain.ElectricMotor branch.
+ * Zoned interface supporting multiple motors (Motor1, Motor2).
+ */
+@config: { zoned: true }
+interface ElectricMotor {
+    /** VSS: Vehicle.Powertrain.ElectricMotor.MaxPower */
+    readonly int maxPower;
+    /** VSS: Vehicle.Powertrain.ElectricMotor.MaxTorque */
+    readonly int maxTorque;
+    /** VSS: Vehicle.Powertrain.ElectricMotor.MaxRegenPower */
+    readonly int maxRegenPower;
+    /** VSS: Vehicle.Powertrain.ElectricMotor.MaxRegenTorque */
+    readonly int maxRegenTorque;
+    /** VSS: Vehicle.Powertrain.ElectricMotor.Speed */
+    readonly int speed;
+    /** VSS: Vehicle.Powertrain.ElectricMotor.Temperature */
+    readonly real temperature;
+    /** VSS: Vehicle.Powertrain.ElectricMotor.CoolantTemperature */
+    readonly real coolantTemperature;
+    /** VSS: Vehicle.Powertrain.ElectricMotor.Power */
+    readonly real power;
+    /** VSS: Vehicle.Powertrain.ElectricMotor.Torque */
+    readonly real torque;
+    /** VSS: Vehicle.Powertrain.ElectricMotor.OperatingMode */
+    readonly Common.ElectricMotorMode operatingMode;
+}
+
+/**
+ * Traction (high-voltage) battery data from VSS Vehicle.Powertrain.TractionBattery branch.
+ * Includes charging sub-branch properties.
+ */
+interface TractionBattery {
+    /** VSS: Vehicle.Powertrain.TractionBattery.Id */
+    readonly string id;
+    /** VSS: Vehicle.Powertrain.TractionBattery.StateOfCharge.Current */
+    readonly real stateOfCharge;
+    /** VSS: Vehicle.Powertrain.TractionBattery.StateOfHealth */
+    readonly real stateOfHealth;
+    /** VSS: Vehicle.Powertrain.TractionBattery.CurrentVoltage */
+    readonly real currentVoltage;
+    /** VSS: Vehicle.Powertrain.TractionBattery.CurrentCurrent */
+    readonly real currentCurrent;
+    /** VSS: Vehicle.Powertrain.TractionBattery.CurrentPower */
+    readonly real currentPower;
+    /** VSS: Vehicle.Powertrain.TractionBattery.Temperature */
+    readonly real temperature;
+    /** VSS: Vehicle.Powertrain.TractionBattery.NominalVoltage */
+    readonly int nominalVoltage;
+    /** VSS: Vehicle.Powertrain.TractionBattery.MaxVoltage */
+    readonly int maxVoltage;
+    /** VSS: Vehicle.Powertrain.TractionBattery.GrossCapacity */
+    readonly int grossCapacity;
+    /** VSS: Vehicle.Powertrain.TractionBattery.NetCapacity */
+    readonly int netCapacity;
+    /** VSS: Vehicle.Powertrain.TractionBattery.AccumulatedChargedEnergy */
+    readonly real accumulatedChargedEnergy;
+    /** VSS: Vehicle.Powertrain.TractionBattery.AccumulatedConsumedEnergy */
+    readonly real accumulatedConsumedEnergy;
+    /** VSS: Vehicle.Powertrain.TractionBattery.Charging.Status */
+    readonly Common.ChargingStatus chargingStatus;
+    /** VSS: Vehicle.Powertrain.TractionBattery.Charging.ChargePlugType */
+    readonly Common.ChargePlugType chargePlugType;
+    /** VSS: Vehicle.Powertrain.TractionBattery.Charging.IsCharging */
+    readonly bool isCharging;
+    /** VSS: Vehicle.Powertrain.TractionBattery.Charging.IsChargingCableConnected */
+    readonly bool isChargingCableConnected;
+    /** VSS: Vehicle.Powertrain.TractionBattery.Charging.ChargeRate */
+    readonly real chargingRate;
+    /** VSS: Vehicle.Powertrain.TractionBattery.Charging.ChargeLimit - actuator */
+    real chargeLimit;
+    /** VSS: Vehicle.Powertrain.TractionBattery.Charging.TimeToComplete */
+    readonly real timeToComplete;
+}
+
+/**
+ * Fuel system data from VSS Vehicle.Powertrain.FuelSystem branch.
+ * All properties are sensors (readonly).
+ */
+interface FuelSystem {
+    /** VSS: Vehicle.Powertrain.FuelSystem.SupportedFuelTypes */
+    readonly Common.FuelType supportedFuelType;
+    /** VSS: Vehicle.Powertrain.FuelSystem.Level */
+    readonly real fuelLevel;
+    /** VSS: Vehicle.Powertrain.FuelSystem.Range */
+    readonly real range;
+    /** VSS: Vehicle.Powertrain.FuelSystem.InstantConsumption */
+    readonly real instantConsumption;
+    /** VSS: Vehicle.Powertrain.FuelSystem.AverageConsumption */
+    readonly real averageConsumption;
+    /** VSS: Vehicle.Powertrain.FuelSystem.ConsumptionSinceStart */
+    readonly real consumptionSinceStart;
+    /** VSS: Vehicle.Powertrain.FuelSystem.TankCapacity */
+    readonly int tankCapacity;
+    /** VSS: Vehicle.Powertrain.FuelSystem.IsEngineStopStartEnabled */
+    readonly bool isEngineStopStartEnabled;
+    /** VSS: Vehicle.Powertrain.FuelSystem.IsFuelLevelLow */
+    readonly bool isFuelLevelLow;
+}

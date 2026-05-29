@@ -1,0 +1,32 @@
+module COVESA.VSS.Connectivity 1.0
+
+import Common 1.0
+
+/**
+ * Vehicle connectivity status and control from VSS Vehicle.Connectivity branch.
+ * Covers cellular, WiFi, and Bluetooth subsystems.
+ */
+interface ConnectivityControl {
+    /** VSS: Vehicle.Connectivity.Cellular.Status */
+    readonly Common.ConnectivityStatus cellularStatus;
+    /** VSS: Vehicle.Connectivity.Cellular.SignalStrength */
+    readonly int cellularSignalStrength;
+    /** VSS: Vehicle.Connectivity.Cellular.NetworkType */
+    readonly string cellularNetworkType;
+    /** VSS: Vehicle.Connectivity.Cellular.Operator */
+    readonly string cellularOperator;
+    /** VSS: Vehicle.Connectivity.WiFi.Status */
+    readonly Common.ConnectivityStatus wifiStatus;
+    /** VSS: Vehicle.Connectivity.WiFi.SignalStrength */
+    readonly int wifiSignalStrength;
+    /** VSS: Vehicle.Connectivity.WiFi.SSID */
+    readonly string wifiSSID;
+    /** VSS: Vehicle.Connectivity.WiFi.IsHotspotEnabled */
+    bool isWifiHotspotEnabled;
+    /** VSS: Vehicle.Connectivity.Bluetooth.Status */
+    readonly Common.ConnectivityStatus bluetoothStatus;
+    /** VSS: Vehicle.Connectivity.Bluetooth.PairedDevices */
+    readonly int bluetoothPairedDevices;
+    /** VSS: Vehicle.Connectivity.Bluetooth.IsEnabled */
+    readonly bool isBluetoothEnabled;
+}

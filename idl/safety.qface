@@ -1,0 +1,46 @@
+module COVESA.VSS.Safety 1.0
+
+import Common 1.0
+
+/**
+ * Crash detection sensors from VSS Vehicle.Safety.CrashDetection branch.
+ * Provides crash status, severity, and impact data.
+ */
+interface CrashDetection {
+    /** VSS: Vehicle.Safety.CrashDetection.Status */
+    readonly Common.CrashStatus crashStatus;
+    /** VSS: Vehicle.Safety.CrashDetection.Severity */
+    readonly real crashSeverity;
+    /** VSS: Vehicle.Safety.CrashDetection.IsDetected */
+    readonly bool isCrashDetected;
+    /** VSS: Vehicle.Safety.CrashDetection.Timestamp */
+    readonly string crashTimestamp;
+    /** VSS: Vehicle.Safety.CrashDetection.ImpactForce */
+    readonly real impactForce;
+    /** VSS: Vehicle.Safety.CrashDetection.ImpactAngle */
+    readonly real impactAngle;
+}
+
+/**
+ * Airbag deployment status from VSS Vehicle.Safety.Airbag branch.
+ * Zoned: FrontLeft, FrontRight, SideLeft, SideRight, Curtain.
+ */
+@config: { zoned: true }
+interface AirbagSystem {
+    /** VSS: Vehicle.Safety.Airbag.*.Status */
+    readonly Common.AirbagStatus status;
+    /** VSS: Vehicle.Safety.Airbag.*.IsDeployed */
+    readonly bool isDeployed;
+}
+
+/**
+ * Seat belt status from VSS Vehicle.Safety.Belt branch.
+ * Zoned: Row1Left, Row1Right, Row2Left, Row2Right, Row2Center.
+ */
+@config: { zoned: true }
+interface BeltSystem {
+    /** VSS: Vehicle.Safety.Belt.*.IsFastened */
+    readonly bool isFastened;
+    /** VSS: Vehicle.Safety.Belt.*.IsWarning */
+    readonly bool isWarning;
+}

@@ -1,0 +1,30 @@
+module COVESA.VSS.Service 1.0
+
+import Common 1.0
+
+/**
+ * Vehicle service and maintenance status from VSS Vehicle.Service branch.
+ * Covers service intervals, inspection reminders, and consumable life.
+ */
+interface ServiceStatus {
+    /** VSS: Vehicle.Service.OverallStatus */
+    readonly Common.ServiceStatus overallStatus;
+    /** VSS: Vehicle.Service.DistanceToService */
+    readonly int distanceToService;
+    /** VSS: Vehicle.Service.TimeToService */
+    readonly int timeToService;
+    /** VSS: Vehicle.Service.IsServiceDue */
+    readonly bool isServiceDue;
+    /** VSS: Vehicle.Service.LastServiceDate */
+    readonly string lastServiceDate;
+    /** VSS: Vehicle.Service.OdometerAtLastService */
+    readonly int odometerAtLastService;
+    /** VSS: Vehicle.Service.IsOilChangeRequired */
+    readonly bool isOilChangeRequired;
+    /** VSS: Vehicle.Service.IsBrakeInspectionRequired */
+    readonly bool isBrakeInspectionRequired;
+    /** VSS: Vehicle.Service.IsTireRotationRequired */
+    readonly bool isTireRotationRequired;
+    /** VSS: Vehicle.Service.EngineOilLifeRemaining */
+    readonly int engineOilLifeRemaining;
+}

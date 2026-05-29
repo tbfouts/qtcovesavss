@@ -1,0 +1,121 @@
+module COVESA.VSS.Cabin 1.0
+
+import Common 1.0
+
+/**
+ * Seat position, comfort, and occupancy from VSS Vehicle.Cabin.Seat branch.
+ * Zoned: Row1Left, Row1Right, Row2Left, Row2Right, Row2Center.
+ */
+@config: { zoned: true }
+interface CabinSeat {
+    /** VSS: Vehicle.Cabin.Seat.*.Position */
+    int position;
+    /** VSS: Vehicle.Cabin.Seat.*.Height */
+    int height;
+    /** VSS: Vehicle.Cabin.Seat.*.Tilt */
+    int tilt;
+    /** VSS: Vehicle.Cabin.Seat.*.Backrest.Recline */
+    int backrestRecline;
+    /** VSS: Vehicle.Cabin.Seat.*.Backrest.Lumbar.Support */
+    int backrestLumbarSupport;
+    /** VSS: Vehicle.Cabin.Seat.*.Backrest.Lumbar.Height */
+    int backrestLumbarHeight;
+    /** VSS: Vehicle.Cabin.Seat.*.Heating */
+    bool isHeatingOn;
+    /** VSS: Vehicle.Cabin.Seat.*.HeatingLevel */
+    int heatingLevel;
+    /** VSS: Vehicle.Cabin.Seat.*.Cooling */
+    bool isCoolingOn;
+    /** VSS: Vehicle.Cabin.Seat.*.CoolingLevel */
+    int coolingLevel;
+    /** VSS: Vehicle.Cabin.Seat.*.Massage */
+    bool isMassageOn;
+    /** VSS: Vehicle.Cabin.Seat.*.IsOccupied */
+    readonly bool isOccupied;
+    /** VSS: Vehicle.Cabin.Seat.*.Occupant.Status */
+    readonly Common.SeatOccupancyStatus occupantStatus;
+    /** VSS: Vehicle.Cabin.Seat.*.IsBelted */
+    readonly bool isSeatbeltFastened;
+}
+
+/**
+ * HVAC climate control from VSS Vehicle.Cabin.HVAC branch.
+ * Zoned: FrontLeft, FrontRight, RearLeft, RearRight.
+ */
+@config: { zoned: true }
+interface CabinHVAC {
+    /** VSS: Vehicle.Cabin.HVAC.Station.*.Temperature */
+    real targetTemperature;
+    /** VSS: Vehicle.Cabin.HVAC.Station.*.FanSpeed */
+    int fanSpeed;
+    /** VSS: Vehicle.Cabin.HVAC.Station.*.FanDirection */
+    Common.HVACFanDirection fanDirection;
+    /** VSS: Vehicle.Cabin.HVAC.RecirculationMode */
+    Common.RecirculationMode recirculationMode;
+    /** VSS: Vehicle.Cabin.HVAC.IsAirConditioningActive */
+    bool isAirConditioningActive;
+    /** VSS: Vehicle.Cabin.HVAC.AmbientAirTemperature */
+    readonly real ambientAirTemperature;
+}
+
+/**
+ * Infotainment media and HMI from VSS Vehicle.Cabin.Infotainment branch.
+ * Non-zoned interface.
+ */
+interface CabinInfotainment {
+    /** VSS: Vehicle.Cabin.Infotainment.Media.Source */
+    Common.MediaSource currentSource;
+    /** VSS: Vehicle.Cabin.Infotainment.Media.Volume */
+    int volume;
+    /** VSS: Vehicle.Cabin.Infotainment.Media.Track */
+    readonly string currentTrack;
+    /** VSS: Vehicle.Cabin.Infotainment.Media.Artist */
+    readonly string currentArtist;
+    /** VSS: Vehicle.Cabin.Infotainment.Media.Album */
+    readonly string currentAlbum;
+    /** VSS: Vehicle.Cabin.Infotainment.Media.ElapsedTime */
+    readonly int elapsedTime;
+    /** VSS: Vehicle.Cabin.Infotainment.HMI.CurrentLanguage */
+    readonly string selectedLanguage;
+    /** VSS: Vehicle.Cabin.Infotainment.HMI.DayNightMode */
+    readonly Common.DayNightMode dayNightMode;
+}
+
+/**
+ * Door state, locks, and windows from VSS Vehicle.Cabin.Door branch.
+ * Zoned: FrontLeft, FrontRight, RearLeft, RearRight.
+ */
+@config: { zoned: true }
+interface CabinDoor {
+    /** VSS: Vehicle.Cabin.Door.*.IsOpen */
+    readonly bool isOpen;
+    /** VSS: Vehicle.Cabin.Door.*.IsLocked */
+    bool isLocked;
+    /** VSS: Vehicle.Cabin.Door.*.Window.Position */
+    readonly int windowPosition;
+    /** VSS: Vehicle.Cabin.Door.*.IsChildLockActive */
+    bool isChildLockActive;
+    /** VSS: Vehicle.Cabin.Door.*.State */
+    readonly Common.DoorState doorState;
+}
+
+/**
+ * Interior ambient and dome lighting from VSS Vehicle.Cabin.Lights branch.
+ * Non-zoned interface.
+ */
+interface CabinLights {
+    /** VSS: Vehicle.Cabin.Lights.AmbientLight.Brightness */
+    int ambientLightBrightness;
+    /** VSS: Vehicle.Cabin.Lights.AmbientLight.Red */
+    int ambientLightRed;
+    /** VSS: Vehicle.Cabin.Lights.AmbientLight.Green */
+    int ambientLightGreen;
+    /** VSS: Vehicle.Cabin.Lights.AmbientLight.Blue */
+    int ambientLightBlue;
+    /** VSS: Vehicle.Cabin.Lights.IsDomeOn */
+    bool isDomeLightOn;
+    /** VSS: Vehicle.Cabin.Lights.LightIntensity */
+    readonly int lightIntensity;
+    /** VSS: Vehicle.Cabin.Lights.Spotlight.IsOn */
+    bool isSpotlightOn;
+}

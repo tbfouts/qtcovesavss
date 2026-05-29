@@ -1,0 +1,49 @@
+module COVESA.VSS.MotionManagement 1.0
+
+import Common 1.0
+
+/**
+ * Brake control from VSS Vehicle.MotionManagement.Brake branch.
+ * Covers pedal position actuation and brake status sensing.
+ */
+interface BrakeControl {
+    /** VSS: Vehicle.MotionManagement.Brake.PedalPosition */
+    int pedalPositionTarget;
+    /** VSS: Vehicle.MotionManagement.Brake.PedalPositionActual */
+    readonly int pedalPositionActual;
+    /** VSS: Vehicle.MotionManagement.Brake.IsActive */
+    readonly bool isBrakeActive;
+    /** VSS: Vehicle.MotionManagement.Brake.Torque */
+    readonly real brakeTorque;
+}
+
+/**
+ * Steering control from VSS Vehicle.MotionManagement.Steering branch.
+ * Covers steering angle actuation and steer-by-wire.
+ */
+interface SteeringControl {
+    /** VSS: Vehicle.MotionManagement.Steering.AngleTarget */
+    real steeringAngleTarget;
+    /** VSS: Vehicle.MotionManagement.Steering.AngleActual */
+    readonly real steeringAngleActual;
+    /** VSS: Vehicle.MotionManagement.Steering.Torque */
+    readonly real steeringTorque;
+    /** VSS: Vehicle.MotionManagement.Steering.IsSteerByWireEnabled */
+    bool isSteerByWireEnabled;
+}
+
+/**
+ * Suspension control from VSS Vehicle.MotionManagement.Suspension branch.
+ * Zoned: FrontLeft, FrontRight, RearLeft, RearRight.
+ */
+@config: { zoned: true }
+interface SuspensionControl {
+    /** VSS: Vehicle.MotionManagement.Suspension.*.HeightTarget */
+    int heightTarget;
+    /** VSS: Vehicle.MotionManagement.Suspension.*.HeightActual */
+    readonly int heightActual;
+    /** VSS: Vehicle.MotionManagement.Suspension.Mode */
+    Common.SuspensionMode mode;
+    /** VSS: Vehicle.MotionManagement.Suspension.*.DamperForce */
+    readonly real damperForce;
+}

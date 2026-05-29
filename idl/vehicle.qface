@@ -1,0 +1,91 @@
+module COVESA.VSS.Vehicle 1.0
+
+import Common 1.0
+
+/**
+ * Vehicle identification attributes from VSS Vehicle.VehicleIdentification branch.
+ * All properties are static attributes (readonly).
+ */
+interface VehicleIdentification {
+    /** VSS: Vehicle.VehicleIdentification.VIN */
+    readonly string vin;
+    /** VSS: Vehicle.VehicleIdentification.Brand */
+    readonly string brand;
+    /** VSS: Vehicle.VehicleIdentification.Model */
+    readonly string vehicleModel;
+    /** VSS: Vehicle.VehicleIdentification.Year */
+    readonly int year;
+    /** VSS: Vehicle.VehicleIdentification.BodyType */
+    readonly string bodyType;
+    /** VSS: Vehicle.VehicleIdentification.DateVehicleFirstRegistered */
+    readonly string dateVehicleFirstRegistered;
+    /** VSS: Vehicle.VehicleIdentification.MeetsEmissionStandard */
+    readonly string meetsEmissionStandard;
+    /** VSS: Vehicle.VehicleIdentification.VehicleSpecialUsage */
+    readonly string vehicleSpecialUsage;
+    /** VSS: Vehicle.VehicleIdentification.VehicleInteriorColor */
+    readonly string vehicleInteriorColor;
+    /** VSS: Vehicle.VehicleIdentification.VehicleInteriorType */
+    readonly string vehicleInteriorType;
+    /** VSS: Vehicle.VehicleIdentification.KnownVehicleDamages */
+    readonly string knownVehicleDamages;
+}
+
+/**
+ * Vehicle-level dynamic sensor data from VSS Vehicle branch.
+ * All properties are sensors (readonly).
+ */
+interface VehicleDynamics {
+    /** VSS: Vehicle.Speed */
+    readonly real speed;
+    /** VSS: Vehicle.TraveledDistance */
+    readonly real traveledDistance;
+    /** VSS: Vehicle.TraveledDistanceSinceStart */
+    readonly real traveledDistanceSinceStart;
+    /** VSS: Vehicle.TripMeterReading */
+    readonly real tripMeterReading;
+    /** VSS: Vehicle.IsMoving */
+    readonly bool isMoving;
+    /** VSS: Vehicle.AverageSpeed */
+    readonly real averageSpeed;
+    /** VSS: Vehicle.CurrentOverallWeight */
+    readonly int currentOverallWeight;
+}
+
+/**
+ * Current location data from VSS Vehicle.CurrentLocation branch.
+ * All properties are sensors (readonly).
+ */
+interface CurrentLocation {
+    /** VSS: Vehicle.CurrentLocation.Latitude */
+    readonly real latitude;
+    /** VSS: Vehicle.CurrentLocation.Longitude */
+    readonly real longitude;
+    /** VSS: Vehicle.CurrentLocation.Altitude */
+    readonly real altitude;
+    /** VSS: Vehicle.CurrentLocation.Heading */
+    readonly real heading;
+    /** VSS: Vehicle.CurrentLocation.HorizontalAccuracy */
+    readonly real horizontalAccuracy;
+    /** VSS: Vehicle.CurrentLocation.VerticalAccuracy */
+    readonly real verticalAccuracy;
+    /** VSS: Vehicle.CurrentLocation.GNSSReceiver.FixType */
+    readonly Common.GNSSFixType gnssFixType;
+    /** VSS: Vehicle.CurrentLocation.Timestamp */
+    readonly string timestamp;
+}
+
+/**
+ * Low voltage (12V) battery data from VSS Vehicle.LowVoltageBattery branch.
+ * All properties are sensors (readonly).
+ */
+interface LowVoltageBattery {
+    /** VSS: Vehicle.LowVoltageBattery.CurrentVoltage */
+    readonly real currentVoltage;
+    /** VSS: Vehicle.LowVoltageBattery.CurrentCurrent */
+    readonly real currentCurrent;
+    /** VSS: Vehicle.LowVoltageBattery.NominalVoltage */
+    readonly real nominalVoltage;
+    /** VSS: Vehicle.LowVoltageBattery.NominalCapacity */
+    readonly int nominalCapacity;
+}
