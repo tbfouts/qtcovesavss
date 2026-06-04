@@ -1,0 +1,11 @@
+The proto files in this directory are vendored from the Eclipse KUKSA project:
+
+  https://github.com/eclipse-kuksa/kuksa-databroker
+
+Copyright (c) 2024 Contributors to the Eclipse Foundation
+Licensed under the Apache License 2.0 (SPDX-License-Identifier: Apache-2.0)
+
+Modifications:
+  - val.proto: Changed `import "kuksa/val/v2/types.proto"` to `import "types.proto"`
+    (relative import) because Qt's qt_add_protobuf automatically adds the proto
+    file directory as a protoc include path.
