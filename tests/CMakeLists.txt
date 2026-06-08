@@ -12,3 +12,8 @@ add_subdirectory(exterior)
 add_subdirectory(service)
 add_subdirectory(connectivity)
 add_subdirectory(motionmanagement)
+
+find_package(Qt6 COMPONENTS Protobuf Grpc QUIET)
+if(Qt6Protobuf_FOUND AND Qt6Grpc_FOUND)
+    add_subdirectory(kuksa)
+endif()

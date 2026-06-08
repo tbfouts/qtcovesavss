@@ -4,7 +4,7 @@ A Qt library wrapping the COVESA Vehicle Signal Specification (VSS) v6.0 as nati
 
 ## Overview
 
-This library provides 600+ vehicle data signals organized into 12 QML modules, each mapping to a VSS domain. Every signal is exposed as a `Q_PROPERTY` on a QObject-derived class, usable directly from both C++ and QML. This is a frontend-only library — backend plugins that provide actual data (from KUKSA Databroker, CAN bus, SOME/IP, etc.) must be provided separately.
+This library provides 600+ vehicle data signals organized into 12 QML modules, each mapping to a VSS domain. Every signal is exposed as a `Q_PROPERTY` on a QObject-derived class, usable directly from both C++ and QML. A built-in KUKSA Databroker backend plugin connects to [Eclipse KUKSA](https://github.com/eclipse-kuksa/kuksa-databroker) via gRPC to provide live vehicle data.
 
 ## Requirements
 
@@ -13,6 +13,7 @@ This library provides 600+ vehicle data signals organized into 12 QML modules, e
   - Qt Interface Framework (requires Qt for Device Creation license or building Qt IF from source)
   - Qt Qml
   - Qt Quick
+  - Qt Protobuf + Qt Grpc (optional, for KUKSA backend plugin)
 - CMake 3.16+
 - C++17 compiler
 
@@ -103,16 +104,44 @@ Each domain module produces a frontend target named `covesavss_<module>_frontend
 
 The shared `covesavss_common` library (enums) is linked automatically via each frontend's `PUBLIC` dependency.
 
-### Backend Plugins
+### KUKSA Databroker Backend
 
-This library provides only frontend types (QObject classes and QML modules). At runtime, Qt Interface Framework discovers backend plugins by scanning for an `interfaceframework/` directory adjacent to the application binary.
+The library includes a backend plugin (`src/backends/kuksa/`) that connects to [Eclipse KUKSA Databroker](https://github.com/eclipse-kuksa/kuksa-databroker) via gRPC. It is built automatically when Qt Protobuf and Qt Grpc modules are available.
 
-You must provide a backend plugin that implements the Qt IF backend interface for the modules you use. Options include:
+**Running with KUKSA:**
 
-- **[Eclipse KUKSA Databroker](https://github.com/eclipse-kuksa/kuksa-databroker)** — A gRPC-based VSS server with simulation tools like [kuksa-mock-provider](https://github.com/eclipse-kuksa/kuksa-mock-provider) and [kuksa-csv-provider](https://github.com/eclipse-kuksa/kuksa-csv-provider). Write a Qt IF backend plugin that connects to KUKSA's gRPC API.
-- **Custom backend** — Implement a Qt IF backend plugin that connects to your vehicle's data bus (CAN, SOME/IP, etc.).
+```sh
+# Start KUKSA Databroker + mock data provider
+docker network create kuksa-net
+docker run --rm -d --name kuksa --network kuksa-net -p 55555:55555 \
+  ghcr.io/eclipse-kuksa/kuksa-databroker:main --insecure
+docker run --rm -d --name kuksa-mock --network kuksa-net \
+  -e VDB_ADDRESS=kuksa:55555 \
+  ghcr.io/eclipse-kuksa/kuksa-mock-provider/mock-provider:main
 
-Place your backend plugin `.so`/`.dylib`/`.dll` files in an `interfaceframework/` directory next to your application binary.
+# Run the dashboard with the KUKSA backend
+QT_PLUGIN_PATH=build/plugins \
+  KUKSA_HOST=localhost \
+  KUKSA_PORT=55555 \
+  build/examples/dashboard/vss_dashboard
+```
+
+A custom mock configuration is provided in `examples/kuksa-mock.py` that animates signals across all dashboard sections (speed, RPM, battery SoC, location, temperatures, etc.). Mount it into the mock provider container:
+
+```sh
+docker run --rm -d --name kuksa-mock --network kuksa-net \
+  -e VDB_ADDRESS=kuksa:55555 \
+  -v $(pwd)/examples/kuksa-mock.py:/mock/mock.py:ro \
+  ghcr.io/eclipse-kuksa/kuksa-mock-provider/mock-provider:main
+```
+
+**Configuration:** The plugin reads `KUKSA_HOST` and `KUKSA_PORT` environment variables. It can also be configured at runtime via `updateServiceSettings({"host": "...", "port": ...})` through the Qt Interface Framework service settings system.
+
+**Plugin discovery:** Place the plugin `.dylib`/`.so` in an `interfaceframework/` directory on `QT_PLUGIN_PATH`. The build places it at `build/src/backends/kuksa/libcovesavss_kuksa_backend.dylib`.
+
+### Custom Backends
+
+You can also implement your own Qt IF backend plugin that connects to a different data source (CAN bus, SOME/IP, etc.). The generated backend interface headers in the build directory define the contract each backend must implement.
 
 ### QML Usage
 
@@ -196,6 +225,60 @@ Shared enums are in the `Common` module, imported automatically by all domain mo
 
 ## Architecture
 
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        QML / C++ Application                    │
+│                                                                 │
+│   import COVESA.VSS.Vehicle    import COVESA.VSS.Powertrain     │
+│   VehicleDynamics { }          TractionBattery { }              │
+└──────────┬──────────────────────────────┬───────────────────────┘
+           │ links                        │ links
+           v                              v
+┌─────────────────────────────────────────────────────────────────┐
+│                     Frontend Libraries                          │
+│                                                                 │
+│  covesavss_vehicle_frontend    covesavss_powertrain_frontend    │
+│  covesavss_body_frontend       covesavss_cabin_frontend         │
+│  covesavss_adas_frontend       covesavss_chassis_frontend       │
+│  covesavss_driver_frontend     covesavss_safety_frontend        │
+│  covesavss_exterior_frontend   covesavss_service_frontend       │
+│  covesavss_connectivity_frontend                                │
+│  covesavss_motionmanagement_frontend                            │
+│                                                                 │
+│  Auto-generated from QFace IDL via ifcodegen.                   │
+│  Each produces QObject classes + QML module.                    │
+│  All link PUBLIC against covesavss_common (shared enums).       │
+└──────────┬──────────────────────────────────────────────────────┘
+           │ Qt Interface Framework
+           │ runtime plugin discovery
+           v
+┌─────────────────────────────────────────────────────────────────┐
+│                     Backend Plugins                              │
+│                     (src/backends/)                              │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  KUKSA Backend (src/backends/kuksa/)                    │    │
+│  │                                                         │    │
+│  │  KuksaPlugin ──> KuksaClient ──> gRPC ──> KUKSA        │    │
+│  │       │              │            Databroker            │    │
+│  │       │              v                                  │    │
+│  │       │        VssPathMapping                           │    │
+│  │       │        (IID,prop,zone) <-> VSS path             │    │
+│  │       v                                                 │    │
+│  │  36 Backend classes                                     │    │
+│  │  (24 non-zoned + 12 zoned)                              │    │
+│  │  Emit typed signals on property changes                 │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  Your Backend (src/backends/yourbackend/)               │    │
+│  │  CAN bus, SOME/IP, simulation, replay, ...              │    │
+│  └─────────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+The frontend libraries have **no dependency** on any backend. They define the Q_PROPERTY interfaces and QML types. Backend plugins are discovered at runtime by Qt Interface Framework's service manager and provide live data by implementing the generated `*BackendInterface` classes.
+
 Each module consists of:
 
 - **QFace IDL file** (`idl/<module>.qface`) defining interfaces, properties, and type references
@@ -216,17 +299,19 @@ The `Common` module (`idl/common.qface`) defines shared enums used across all do
 ## Project Structure
 
 ```
-idl/           QFace IDL files (source of truth)
-src/common/    Shared enum library (covesavss_common)
-src/<module>/  Per-module frontend library
-tests/         Auto-generated test suite per module (12 suites)
-examples/      Dashboard example app (requires a backend plugin to run)
+idl/                    QFace IDL files (source of truth)
+src/common/             Shared enum library (covesavss_common)
+src/<module>/           Per-module frontend library (12 modules)
+src/backends/kuksa/     KUKSA Databroker backend plugin (gRPC, optional)
+tests/                  Auto-generated test suites per module + backend tests
+examples/               Dashboard example app + KUKSA mock config
 ```
 
 ## Known Limitations
 
 - **No install target:** The project does not provide `cmake --install` support. Use `add_subdirectory` for integration.
-- **Frontend only:** No backend plugins are included. You must provide a backend (e.g., KUKSA Databroker) for the dashboard example or any consuming application to receive data at runtime.
+- **KUKSA backend requires Qt Grpc:** The backend plugin is only built when `Qt6::Protobuf` and `Qt6::Grpc` modules are found. Without them, only frontend types are available and you must provide your own backend.
+- **No TLS support yet:** The KUKSA backend connects via plaintext HTTP/2. Production deployments using TLS require passing `QGrpcChannelOptions` with certificates.
 
 ## License
 
