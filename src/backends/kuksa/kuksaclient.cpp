@@ -28,6 +28,7 @@ void KuksaClient::setHostUrl(const QUrl &url)
 {
     if (m_url == url)
         return;
+    m_reconnectTimer.stop();
     m_url = url;
     m_stream.reset();
     m_client.reset();
@@ -145,6 +146,11 @@ void KuksaClient::startSubscription(const QStringList &vssPaths)
 void KuksaClient::registerBackend(const QString &iid, ValueCallback callback)
 {
     m_backendCallbacks.insert(iid, std::move(callback));
+}
+
+void KuksaClient::unregisterBackend(const QString &iid)
+{
+    m_backendCallbacks.remove(iid);
 }
 
 void KuksaClient::invokeBackendCallback(const QString &iid, const QString &property,

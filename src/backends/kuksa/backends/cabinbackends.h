@@ -1,6 +1,7 @@
 #ifndef CABINBACKENDS_H
 #define CABINBACKENDS_H
 
+#include <QPointer>
 #include <cabinseatbackendinterface.h>
 #include <cabinhvacbackendinterface.h>
 #include <cabininfotainmentbackendinterface.h>
@@ -19,6 +20,7 @@ class CabinSeatKuksaBackend : public CabinSeatBackendInterface
 
 public:
     explicit CabinSeatKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~CabinSeatKuksaBackend() override;
     void initialize() override;
     QStringList availableZones() const override;
 
@@ -37,7 +39,7 @@ public:
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -50,6 +52,7 @@ class CabinHVACKuksaBackend : public CabinHVACBackendInterface
 
 public:
     explicit CabinHVACKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~CabinHVACKuksaBackend() override;
     void initialize() override;
     QStringList availableZones() const override;
 
@@ -62,7 +65,7 @@ public:
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -75,6 +78,7 @@ class CabinInfotainmentKuksaBackend : public CabinInfotainmentBackendInterface
 
 public:
     explicit CabinInfotainmentKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~CabinInfotainmentKuksaBackend() override;
     void initialize() override;
 
     void setCurrentSource(Common::MediaSource currentSource) override;
@@ -83,7 +87,7 @@ public:
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -96,6 +100,7 @@ class CabinDoorKuksaBackend : public CabinDoorBackendInterface
 
 public:
     explicit CabinDoorKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~CabinDoorKuksaBackend() override;
     void initialize() override;
     QStringList availableZones() const override;
 
@@ -105,7 +110,7 @@ public:
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -118,6 +123,7 @@ class CabinLightsKuksaBackend : public CabinLightsBackendInterface
 
 public:
     explicit CabinLightsKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~CabinLightsKuksaBackend() override;
     void initialize() override;
 
     void setAmbientLightBrightness(int ambientLightBrightness) override;
@@ -130,7 +136,7 @@ public:
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 #endif // CABINBACKENDS_H

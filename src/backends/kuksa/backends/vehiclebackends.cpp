@@ -11,10 +11,18 @@ VehicleIdentificationKuksaBackend::VehicleIdentificationKuksaBackend(KuksaClient
     : VehicleIdentificationBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Vehicle.VehicleIdentification"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Vehicle.VehicleIdentification"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+VehicleIdentificationKuksaBackend::~VehicleIdentificationKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Vehicle.VehicleIdentification"));
 }
 
 void VehicleIdentificationKuksaBackend::initialize()
@@ -57,10 +65,18 @@ VehicleDynamicsKuksaBackend::VehicleDynamicsKuksaBackend(KuksaClient *client, QO
     : VehicleDynamicsBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Vehicle.VehicleDynamics"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Vehicle.VehicleDynamics"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+VehicleDynamicsKuksaBackend::~VehicleDynamicsKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Vehicle.VehicleDynamics"));
 }
 
 void VehicleDynamicsKuksaBackend::initialize()
@@ -95,10 +111,18 @@ CurrentLocationKuksaBackend::CurrentLocationKuksaBackend(KuksaClient *client, QO
     : CurrentLocationBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Vehicle.CurrentLocation"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Vehicle.CurrentLocation"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+CurrentLocationKuksaBackend::~CurrentLocationKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Vehicle.CurrentLocation"));
 }
 
 void CurrentLocationKuksaBackend::initialize()
@@ -135,10 +159,18 @@ LowVoltageBatteryKuksaBackend::LowVoltageBatteryKuksaBackend(KuksaClient *client
     : LowVoltageBatteryBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Vehicle.LowVoltageBattery"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Vehicle.LowVoltageBattery"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+LowVoltageBatteryKuksaBackend::~LowVoltageBatteryKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Vehicle.LowVoltageBattery"));
 }
 
 void LowVoltageBatteryKuksaBackend::initialize()

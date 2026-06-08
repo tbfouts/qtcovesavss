@@ -12,10 +12,18 @@ CabinSeatKuksaBackend::CabinSeatKuksaBackend(KuksaClient *client, QObject *paren
     : CabinSeatBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Cabin.CabinSeat"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Cabin.CabinSeat"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+CabinSeatKuksaBackend::~CabinSeatKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Cabin.CabinSeat"));
 }
 
 void CabinSeatKuksaBackend::initialize()
@@ -31,66 +39,77 @@ QStringList CabinSeatKuksaBackend::availableZones() const
 
 void CabinSeatKuksaBackend::setPosition(int position, const QString &zone)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinSeat");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("position"), zone), position);
 }
 
 void CabinSeatKuksaBackend::setHeight(int height, const QString &zone)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinSeat");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("height"), zone), height);
 }
 
 void CabinSeatKuksaBackend::setTilt(int tilt, const QString &zone)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinSeat");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("tilt"), zone), tilt);
 }
 
 void CabinSeatKuksaBackend::setBackrestRecline(int backrestRecline, const QString &zone)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinSeat");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("backrestRecline"), zone), backrestRecline);
 }
 
 void CabinSeatKuksaBackend::setBackrestLumbarSupport(int backrestLumbarSupport, const QString &zone)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinSeat");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("backrestLumbarSupport"), zone), backrestLumbarSupport);
 }
 
 void CabinSeatKuksaBackend::setBackrestLumbarHeight(int backrestLumbarHeight, const QString &zone)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinSeat");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("backrestLumbarHeight"), zone), backrestLumbarHeight);
 }
 
 void CabinSeatKuksaBackend::setIsHeatingOn(bool isHeatingOn, const QString &zone)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinSeat");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("isHeatingOn"), zone), isHeatingOn);
 }
 
 void CabinSeatKuksaBackend::setHeatingLevel(int heatingLevel, const QString &zone)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinSeat");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("heatingLevel"), zone), heatingLevel);
 }
 
 void CabinSeatKuksaBackend::setIsCoolingOn(bool isCoolingOn, const QString &zone)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinSeat");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("isCoolingOn"), zone), isCoolingOn);
 }
 
 void CabinSeatKuksaBackend::setCoolingLevel(int coolingLevel, const QString &zone)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinSeat");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("coolingLevel"), zone), coolingLevel);
 }
 
 void CabinSeatKuksaBackend::setIsMassageOn(bool isMassageOn, const QString &zone)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinSeat");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("isMassageOn"), zone), isMassageOn);
 }
@@ -135,10 +154,18 @@ CabinHVACKuksaBackend::CabinHVACKuksaBackend(KuksaClient *client, QObject *paren
     : CabinHVACBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Cabin.CabinHVAC"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Cabin.CabinHVAC"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+CabinHVACKuksaBackend::~CabinHVACKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Cabin.CabinHVAC"));
 }
 
 void CabinHVACKuksaBackend::initialize()
@@ -154,24 +181,28 @@ QStringList CabinHVACKuksaBackend::availableZones() const
 
 void CabinHVACKuksaBackend::setTargetTemperature(qreal targetTemperature, const QString &zone)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinHVAC");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("targetTemperature"), zone), targetTemperature);
 }
 
 void CabinHVACKuksaBackend::setFanSpeed(int fanSpeed, const QString &zone)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinHVAC");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("fanSpeed"), zone), fanSpeed);
 }
 
 void CabinHVACKuksaBackend::setFanDirection(Common::HVACFanDirection fanDirection, const QString &zone)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinHVAC");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("fanDirection"), zone), static_cast<int>(fanDirection));
 }
 
 void CabinHVACKuksaBackend::setRecirculationMode(Common::RecirculationMode recirculationMode, const QString &zone)
 {
+    if (!m_client) return;
     Q_UNUSED(zone);
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinHVAC");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("recirculationMode")), static_cast<int>(recirculationMode));
@@ -179,6 +210,7 @@ void CabinHVACKuksaBackend::setRecirculationMode(Common::RecirculationMode recir
 
 void CabinHVACKuksaBackend::setIsAirConditioningActive(bool isAirConditioningActive, const QString &zone)
 {
+    if (!m_client) return;
     Q_UNUSED(zone);
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinHVAC");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("isAirConditioningActive")), isAirConditioningActive);
@@ -208,10 +240,18 @@ CabinInfotainmentKuksaBackend::CabinInfotainmentKuksaBackend(KuksaClient *client
     : CabinInfotainmentBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Cabin.CabinInfotainment"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Cabin.CabinInfotainment"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+CabinInfotainmentKuksaBackend::~CabinInfotainmentKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Cabin.CabinInfotainment"));
 }
 
 void CabinInfotainmentKuksaBackend::initialize()
@@ -221,12 +261,14 @@ void CabinInfotainmentKuksaBackend::initialize()
 
 void CabinInfotainmentKuksaBackend::setCurrentSource(Common::MediaSource currentSource)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinInfotainment");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("currentSource")), static_cast<int>(currentSource));
 }
 
 void CabinInfotainmentKuksaBackend::setVolume(int volume)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinInfotainment");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("volume")), volume);
 }
@@ -260,10 +302,18 @@ CabinDoorKuksaBackend::CabinDoorKuksaBackend(KuksaClient *client, QObject *paren
     : CabinDoorBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Cabin.CabinDoor"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Cabin.CabinDoor"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+CabinDoorKuksaBackend::~CabinDoorKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Cabin.CabinDoor"));
 }
 
 void CabinDoorKuksaBackend::initialize()
@@ -279,12 +329,14 @@ QStringList CabinDoorKuksaBackend::availableZones() const
 
 void CabinDoorKuksaBackend::setIsLocked(bool isLocked, const QString &zone)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinDoor");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("isLocked"), zone), isLocked);
 }
 
 void CabinDoorKuksaBackend::setIsChildLockActive(bool isChildLockActive, const QString &zone)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinDoor");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("isChildLockActive"), zone), isChildLockActive);
 }
@@ -311,10 +363,18 @@ CabinLightsKuksaBackend::CabinLightsKuksaBackend(KuksaClient *client, QObject *p
     : CabinLightsBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Cabin.CabinLights"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Cabin.CabinLights"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+CabinLightsKuksaBackend::~CabinLightsKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Cabin.CabinLights"));
 }
 
 void CabinLightsKuksaBackend::initialize()
@@ -324,36 +384,42 @@ void CabinLightsKuksaBackend::initialize()
 
 void CabinLightsKuksaBackend::setAmbientLightBrightness(int ambientLightBrightness)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinLights");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("ambientLightBrightness")), ambientLightBrightness);
 }
 
 void CabinLightsKuksaBackend::setAmbientLightRed(int ambientLightRed)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinLights");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("ambientLightRed")), ambientLightRed);
 }
 
 void CabinLightsKuksaBackend::setAmbientLightGreen(int ambientLightGreen)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinLights");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("ambientLightGreen")), ambientLightGreen);
 }
 
 void CabinLightsKuksaBackend::setAmbientLightBlue(int ambientLightBlue)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinLights");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("ambientLightBlue")), ambientLightBlue);
 }
 
 void CabinLightsKuksaBackend::setIsDomeLightOn(bool isDomeLightOn)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinLights");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("isDomeLightOn")), isDomeLightOn);
 }
 
 void CabinLightsKuksaBackend::setIsSpotlightOn(bool isSpotlightOn)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Cabin.CabinLights");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("isSpotlightOn")), isSpotlightOn);
 }

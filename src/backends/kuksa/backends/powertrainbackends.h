@@ -1,6 +1,8 @@
 #ifndef POWERTRAINBACKENDS_H
 #define POWERTRAINBACKENDS_H
 
+#include <QPointer>
+
 #include <powertrainstatusbackendinterface.h>
 #include <combustionenginebackendinterface.h>
 #include <transmissionbackendinterface.h>
@@ -20,12 +22,13 @@ class PowertrainStatusKuksaBackend : public PowertrainStatusBackendInterface
 
 public:
     explicit PowertrainStatusKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~PowertrainStatusKuksaBackend() override;
     void initialize() override;
 
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -38,12 +41,13 @@ class CombustionEngineKuksaBackend : public CombustionEngineBackendInterface
 
 public:
     explicit CombustionEngineKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~CombustionEngineKuksaBackend() override;
     void initialize() override;
 
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -56,6 +60,7 @@ class TransmissionKuksaBackend : public TransmissionBackendInterface
 
 public:
     explicit TransmissionKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~TransmissionKuksaBackend() override;
     void initialize() override;
 
     void setPerformanceMode(Common::TransmissionPerformanceMode performanceMode) override;
@@ -63,7 +68,7 @@ public:
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -76,13 +81,14 @@ class ElectricMotorKuksaBackend : public ElectricMotorBackendInterface
 
 public:
     explicit ElectricMotorKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~ElectricMotorKuksaBackend() override;
     void initialize() override;
     QStringList availableZones() const override;
 
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -95,6 +101,7 @@ class TractionBatteryKuksaBackend : public TractionBatteryBackendInterface
 
 public:
     explicit TractionBatteryKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~TractionBatteryKuksaBackend() override;
     void initialize() override;
 
     void setChargeLimit(qreal chargeLimit) override;
@@ -102,7 +109,7 @@ public:
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -115,12 +122,13 @@ class FuelSystemKuksaBackend : public FuelSystemBackendInterface
 
 public:
     explicit FuelSystemKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~FuelSystemKuksaBackend() override;
     void initialize() override;
 
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 #endif // POWERTRAINBACKENDS_H

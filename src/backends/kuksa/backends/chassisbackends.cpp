@@ -12,10 +12,18 @@ ChassisAxleKuksaBackend::ChassisAxleKuksaBackend(KuksaClient *client, QObject *p
     : ChassisAxleBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Chassis.ChassisAxle"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Chassis.ChassisAxle"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+ChassisAxleKuksaBackend::~ChassisAxleKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Chassis.ChassisAxle"));
 }
 
 void ChassisAxleKuksaBackend::initialize()
@@ -53,10 +61,18 @@ ChassisWheelKuksaBackend::ChassisWheelKuksaBackend(KuksaClient *client, QObject 
     : ChassisWheelBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Chassis.ChassisWheel"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Chassis.ChassisWheel"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+ChassisWheelKuksaBackend::~ChassisWheelKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Chassis.ChassisWheel"));
 }
 
 void ChassisWheelKuksaBackend::initialize()
@@ -94,10 +110,18 @@ ChassisSteeringKuksaBackend::ChassisSteeringKuksaBackend(KuksaClient *client, QO
     : ChassisSteeringBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Chassis.ChassisSteering"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Chassis.ChassisSteering"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+ChassisSteeringKuksaBackend::~ChassisSteeringKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Chassis.ChassisSteering"));
 }
 
 void ChassisSteeringKuksaBackend::initialize()
@@ -126,10 +150,18 @@ ChassisBrakeKuksaBackend::ChassisBrakeKuksaBackend(KuksaClient *client, QObject 
     : ChassisBrakeBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Chassis.ChassisBrake"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Chassis.ChassisBrake"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+ChassisBrakeKuksaBackend::~ChassisBrakeKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Chassis.ChassisBrake"));
 }
 
 void ChassisBrakeKuksaBackend::initialize()
@@ -139,6 +171,7 @@ void ChassisBrakeKuksaBackend::initialize()
 
 void ChassisBrakeKuksaBackend::setIsParkingBrakeEngaged(bool isParkingBrakeEngaged)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Chassis.ChassisBrake");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("isParkingBrakeEngaged")), isParkingBrakeEngaged);
 }

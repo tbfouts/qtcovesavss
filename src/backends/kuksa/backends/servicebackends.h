@@ -1,6 +1,7 @@
 #ifndef SERVICEBACKENDS_H
 #define SERVICEBACKENDS_H
 
+#include <QPointer>
 #include <servicestatusbackendinterface.h>
 
 class KuksaClient;
@@ -15,12 +16,13 @@ class ServiceStatusKuksaBackend : public ServiceStatusBackendInterface
 
 public:
     explicit ServiceStatusKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~ServiceStatusKuksaBackend() override;
     void initialize() override;
 
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 #endif // SERVICEBACKENDS_H

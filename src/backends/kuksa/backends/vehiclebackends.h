@@ -1,6 +1,8 @@
 #ifndef VEHICLEBACKENDS_H
 #define VEHICLEBACKENDS_H
 
+#include <QPointer>
+
 #include <vehicleidentificationbackendinterface.h>
 #include <vehicledynamicsbackendinterface.h>
 #include <currentlocationbackendinterface.h>
@@ -18,13 +20,13 @@ class VehicleIdentificationKuksaBackend : public VehicleIdentificationBackendInt
 
 public:
     explicit VehicleIdentificationKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~VehicleIdentificationKuksaBackend() override;
     void initialize() override;
 
-public Q_SLOTS:
+private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-private:
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -37,12 +39,13 @@ class VehicleDynamicsKuksaBackend : public VehicleDynamicsBackendInterface
 
 public:
     explicit VehicleDynamicsKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~VehicleDynamicsKuksaBackend() override;
     void initialize() override;
 
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -55,12 +58,13 @@ class CurrentLocationKuksaBackend : public CurrentLocationBackendInterface
 
 public:
     explicit CurrentLocationKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~CurrentLocationKuksaBackend() override;
     void initialize() override;
 
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -73,13 +77,13 @@ class LowVoltageBatteryKuksaBackend : public LowVoltageBatteryBackendInterface
 
 public:
     explicit LowVoltageBatteryKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~LowVoltageBatteryKuksaBackend() override;
     void initialize() override;
 
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-private:
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 #endif // VEHICLEBACKENDS_H

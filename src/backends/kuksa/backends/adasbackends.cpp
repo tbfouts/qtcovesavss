@@ -12,10 +12,18 @@ ADASControlKuksaBackend::ADASControlKuksaBackend(KuksaClient *client, QObject *p
     : ADASControlBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.ADAS.ADASControl"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.ADAS.ADASControl"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+ADASControlKuksaBackend::~ADASControlKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.ADAS.ADASControl"));
 }
 
 void ADASControlKuksaBackend::initialize()
@@ -25,36 +33,42 @@ void ADASControlKuksaBackend::initialize()
 
 void ADASControlKuksaBackend::setIsAEBEnabled(bool isAEBEnabled)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.ADAS.ADASControl");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("isAEBEnabled")), isAEBEnabled);
 }
 
 void ADASControlKuksaBackend::setIsEBDEnabled(bool isEBDEnabled)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.ADAS.ADASControl");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("isEBDEnabled")), isEBDEnabled);
 }
 
 void ADASControlKuksaBackend::setIsESCEnabled(bool isESCEnabled)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.ADAS.ADASControl");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("isESCEnabled")), isESCEnabled);
 }
 
 void ADASControlKuksaBackend::setIsTCSEnabled(bool isTCSEnabled)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.ADAS.ADASControl");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("isTCSEnabled")), isTCSEnabled);
 }
 
 void ADASControlKuksaBackend::setIsLaneDepartureEnabled(bool isLaneDepartureEnabled)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.ADAS.ADASControl");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("isLaneDepartureEnabled")), isLaneDepartureEnabled);
 }
 
 void ADASControlKuksaBackend::setIsBlindSpotEnabled(bool isBlindSpotEnabled)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.ADAS.ADASControl");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("isBlindSpotEnabled")), isBlindSpotEnabled);
 }
@@ -110,10 +124,18 @@ CruiseControlKuksaBackend::CruiseControlKuksaBackend(KuksaClient *client, QObjec
     : CruiseControlBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.ADAS.CruiseControl"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.ADAS.CruiseControl"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+CruiseControlKuksaBackend::~CruiseControlKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.ADAS.CruiseControl"));
 }
 
 void CruiseControlKuksaBackend::initialize()
@@ -123,18 +145,21 @@ void CruiseControlKuksaBackend::initialize()
 
 void CruiseControlKuksaBackend::setIsEnabled(bool isEnabled)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.ADAS.CruiseControl");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("isEnabled")), isEnabled);
 }
 
 void CruiseControlKuksaBackend::setSpeedSet(qreal speedSet)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.ADAS.CruiseControl");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("speedSet")), speedSet);
 }
 
 void CruiseControlKuksaBackend::setTargetGap(qreal targetGap)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.ADAS.CruiseControl");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("targetGap")), targetGap);
 }
@@ -166,10 +191,18 @@ ObstacleDetectionKuksaBackend::ObstacleDetectionKuksaBackend(KuksaClient *client
     : ObstacleDetectionBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.ADAS.ObstacleDetection"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.ADAS.ObstacleDetection"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+ObstacleDetectionKuksaBackend::~ObstacleDetectionKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.ADAS.ObstacleDetection"));
 }
 
 void ObstacleDetectionKuksaBackend::initialize()
@@ -185,6 +218,7 @@ QStringList ObstacleDetectionKuksaBackend::availableZones() const
 
 void ObstacleDetectionKuksaBackend::setIsEnabled(bool isEnabled, const QString &zone)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.ADAS.ObstacleDetection");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("isEnabled"), zone), isEnabled);
 }

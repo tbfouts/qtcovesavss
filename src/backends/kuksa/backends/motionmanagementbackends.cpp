@@ -12,10 +12,18 @@ BrakeControlKuksaBackend::BrakeControlKuksaBackend(KuksaClient *client, QObject 
     : BrakeControlBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.MotionManagement.BrakeControl"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.MotionManagement.BrakeControl"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+BrakeControlKuksaBackend::~BrakeControlKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.MotionManagement.BrakeControl"));
 }
 
 void BrakeControlKuksaBackend::initialize()
@@ -25,6 +33,7 @@ void BrakeControlKuksaBackend::initialize()
 
 void BrakeControlKuksaBackend::setPedalPositionTarget(int pedalPositionTarget)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.MotionManagement.BrakeControl");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("pedalPositionTarget")), pedalPositionTarget);
 }
@@ -50,10 +59,18 @@ SteeringControlKuksaBackend::SteeringControlKuksaBackend(KuksaClient *client, QO
     : SteeringControlBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.MotionManagement.SteeringControl"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.MotionManagement.SteeringControl"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+SteeringControlKuksaBackend::~SteeringControlKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.MotionManagement.SteeringControl"));
 }
 
 void SteeringControlKuksaBackend::initialize()
@@ -63,12 +80,14 @@ void SteeringControlKuksaBackend::initialize()
 
 void SteeringControlKuksaBackend::setSteeringAngleTarget(qreal steeringAngleTarget)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.MotionManagement.SteeringControl");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("steeringAngleTarget")), steeringAngleTarget);
 }
 
 void SteeringControlKuksaBackend::setIsSteerByWireEnabled(bool isSteerByWireEnabled)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.MotionManagement.SteeringControl");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("isSteerByWireEnabled")), isSteerByWireEnabled);
 }
@@ -94,10 +113,18 @@ SuspensionControlKuksaBackend::SuspensionControlKuksaBackend(KuksaClient *client
     : SuspensionControlBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.MotionManagement.SuspensionControl"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.MotionManagement.SuspensionControl"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+SuspensionControlKuksaBackend::~SuspensionControlKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.MotionManagement.SuspensionControl"));
 }
 
 void SuspensionControlKuksaBackend::initialize()
@@ -113,12 +140,14 @@ QStringList SuspensionControlKuksaBackend::availableZones() const
 
 void SuspensionControlKuksaBackend::setHeightTarget(int heightTarget, const QString &zone)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.MotionManagement.SuspensionControl");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("heightTarget"), zone), heightTarget);
 }
 
 void SuspensionControlKuksaBackend::setMode(Common::SuspensionMode mode, const QString &zone)
 {
+    if (!m_client) return;
     Q_UNUSED(zone)
     static const QString iid = QStringLiteral("COVESA.VSS.MotionManagement.SuspensionControl");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("mode")), static_cast<int>(mode));

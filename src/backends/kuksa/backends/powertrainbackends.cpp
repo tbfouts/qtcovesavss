@@ -12,10 +12,18 @@ PowertrainStatusKuksaBackend::PowertrainStatusKuksaBackend(KuksaClient *client, 
     : PowertrainStatusBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Powertrain.PowertrainStatus"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Powertrain.PowertrainStatus"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+PowertrainStatusKuksaBackend::~PowertrainStatusKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Powertrain.PowertrainStatus"));
 }
 
 void PowertrainStatusKuksaBackend::initialize()
@@ -42,10 +50,18 @@ CombustionEngineKuksaBackend::CombustionEngineKuksaBackend(KuksaClient *client, 
     : CombustionEngineBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Powertrain.CombustionEngine"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Powertrain.CombustionEngine"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+CombustionEngineKuksaBackend::~CombustionEngineKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Powertrain.CombustionEngine"));
 }
 
 void CombustionEngineKuksaBackend::initialize()
@@ -100,10 +116,18 @@ TransmissionKuksaBackend::TransmissionKuksaBackend(KuksaClient *client, QObject 
     : TransmissionBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Powertrain.Transmission"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Powertrain.Transmission"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+TransmissionKuksaBackend::~TransmissionKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Powertrain.Transmission"));
 }
 
 void TransmissionKuksaBackend::initialize()
@@ -113,6 +137,7 @@ void TransmissionKuksaBackend::initialize()
 
 void TransmissionKuksaBackend::setPerformanceMode(Common::TransmissionPerformanceMode performanceMode)
 {
+    if (!m_client) return;
     const QString path = VssPathMapping::vssPath(
         QStringLiteral("COVESA.VSS.Powertrain.Transmission"), QStringLiteral("performanceMode"));
     m_client->actuate(path, QVariant::fromValue(static_cast<int>(performanceMode)));
@@ -151,10 +176,18 @@ ElectricMotorKuksaBackend::ElectricMotorKuksaBackend(KuksaClient *client, QObjec
     : ElectricMotorBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Powertrain.ElectricMotor"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Powertrain.ElectricMotor"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+ElectricMotorKuksaBackend::~ElectricMotorKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Powertrain.ElectricMotor"));
 }
 
 void ElectricMotorKuksaBackend::initialize()
@@ -199,10 +232,18 @@ TractionBatteryKuksaBackend::TractionBatteryKuksaBackend(KuksaClient *client, QO
     : TractionBatteryBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Powertrain.TractionBattery"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Powertrain.TractionBattery"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+TractionBatteryKuksaBackend::~TractionBatteryKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Powertrain.TractionBattery"));
 }
 
 void TractionBatteryKuksaBackend::initialize()
@@ -212,6 +253,7 @@ void TractionBatteryKuksaBackend::initialize()
 
 void TractionBatteryKuksaBackend::setChargeLimit(qreal chargeLimit)
 {
+    if (!m_client) return;
     const QString path = VssPathMapping::vssPath(
         QStringLiteral("COVESA.VSS.Powertrain.TractionBattery"), QStringLiteral("chargeLimit"));
     m_client->actuate(path, QVariant(chargeLimit));
@@ -270,10 +312,18 @@ FuelSystemKuksaBackend::FuelSystemKuksaBackend(KuksaClient *client, QObject *par
     : FuelSystemBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Powertrain.FuelSystem"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Powertrain.FuelSystem"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+FuelSystemKuksaBackend::~FuelSystemKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Powertrain.FuelSystem"));
 }
 
 void FuelSystemKuksaBackend::initialize()

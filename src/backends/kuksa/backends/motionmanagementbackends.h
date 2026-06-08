@@ -1,6 +1,7 @@
 #ifndef MOTIONMANAGEMENTBACKENDS_H
 #define MOTIONMANAGEMENTBACKENDS_H
 
+#include <QPointer>
 #include <brakecontrolbackendinterface.h>
 #include <steeringcontrolbackendinterface.h>
 #include <suspensioncontrolbackendinterface.h>
@@ -17,6 +18,7 @@ class BrakeControlKuksaBackend : public BrakeControlBackendInterface
 
 public:
     explicit BrakeControlKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~BrakeControlKuksaBackend() override;
     void initialize() override;
 
     void setPedalPositionTarget(int pedalPositionTarget) override;
@@ -24,7 +26,7 @@ public:
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -37,6 +39,7 @@ class SteeringControlKuksaBackend : public SteeringControlBackendInterface
 
 public:
     explicit SteeringControlKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~SteeringControlKuksaBackend() override;
     void initialize() override;
 
     void setSteeringAngleTarget(qreal steeringAngleTarget) override;
@@ -45,7 +48,7 @@ public:
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -58,6 +61,7 @@ class SuspensionControlKuksaBackend : public SuspensionControlBackendInterface
 
 public:
     explicit SuspensionControlKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~SuspensionControlKuksaBackend() override;
     void initialize() override;
     QStringList availableZones() const override;
 
@@ -67,7 +71,7 @@ public:
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 #endif // MOTIONMANAGEMENTBACKENDS_H

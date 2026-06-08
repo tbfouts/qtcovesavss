@@ -1,6 +1,7 @@
 #ifndef EXTERIORBACKENDS_H
 #define EXTERIORBACKENDS_H
 
+#include <QPointer>
 #include <environmentsensorsbackendinterface.h>
 
 class KuksaClient;
@@ -15,12 +16,13 @@ class EnvironmentSensorsKuksaBackend : public EnvironmentSensorsBackendInterface
 
 public:
     explicit EnvironmentSensorsKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~EnvironmentSensorsKuksaBackend() override;
     void initialize() override;
 
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 #endif // EXTERIORBACKENDS_H

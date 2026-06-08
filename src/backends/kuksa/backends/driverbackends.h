@@ -1,6 +1,7 @@
 #ifndef DRIVERBACKENDS_H
 #define DRIVERBACKENDS_H
 
+#include <QPointer>
 #include <drivermonitoringbackendinterface.h>
 
 class KuksaClient;
@@ -15,12 +16,13 @@ class DriverMonitoringKuksaBackend : public DriverMonitoringBackendInterface
 
 public:
     explicit DriverMonitoringKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~DriverMonitoringKuksaBackend() override;
     void initialize() override;
 
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 #endif // DRIVERBACKENDS_H

@@ -1,6 +1,7 @@
 #ifndef BODYBACKENDS_H
 #define BODYBACKENDS_H
 
+#include <QPointer>
 #include <bodycontrolbackendinterface.h>
 #include <bodylightsbackendinterface.h>
 #include <windshieldbackendinterface.h>
@@ -18,6 +19,7 @@ class BodyControlKuksaBackend : public BodyControlBackendInterface
 
 public:
     explicit BodyControlKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~BodyControlKuksaBackend() override;
     void initialize() override;
 
     void setIsTrunkLocked(bool isTrunkLocked) override;
@@ -25,7 +27,7 @@ public:
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -38,6 +40,7 @@ class BodyLightsKuksaBackend : public BodyLightsBackendInterface
 
 public:
     explicit BodyLightsKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~BodyLightsKuksaBackend() override;
     void initialize() override;
 
     void setLightSwitch(Common::LightSwitch lightSwitch) override;
@@ -52,7 +55,7 @@ public:
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -65,6 +68,7 @@ class WindshieldKuksaBackend : public WindshieldBackendInterface
 
 public:
     explicit WindshieldKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~WindshieldKuksaBackend() override;
     void initialize() override;
     QStringList availableZones() const override;
 
@@ -74,7 +78,7 @@ public:
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -87,6 +91,7 @@ class BodyMirrorsKuksaBackend : public BodyMirrorsBackendInterface
 
 public:
     explicit BodyMirrorsKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~BodyMirrorsKuksaBackend() override;
     void initialize() override;
     QStringList availableZones() const override;
 
@@ -98,7 +103,7 @@ public:
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 #endif // BODYBACKENDS_H

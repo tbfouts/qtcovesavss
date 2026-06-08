@@ -1,6 +1,7 @@
 #ifndef CHASSISBACKENDS_H
 #define CHASSISBACKENDS_H
 
+#include <QPointer>
 #include <chassisaxlebackendinterface.h>
 #include <chassiswheelbackendinterface.h>
 #include <chassissteeringbackendinterface.h>
@@ -19,13 +20,14 @@ class ChassisAxleKuksaBackend : public ChassisAxleBackendInterface
 
 public:
     explicit ChassisAxleKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~ChassisAxleKuksaBackend() override;
     void initialize() override;
     QStringList availableZones() const override;
 
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -38,13 +40,14 @@ class ChassisWheelKuksaBackend : public ChassisWheelBackendInterface
 
 public:
     explicit ChassisWheelKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~ChassisWheelKuksaBackend() override;
     void initialize() override;
     QStringList availableZones() const override;
 
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -57,12 +60,13 @@ class ChassisSteeringKuksaBackend : public ChassisSteeringBackendInterface
 
 public:
     explicit ChassisSteeringKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~ChassisSteeringKuksaBackend() override;
     void initialize() override;
 
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -75,6 +79,7 @@ class ChassisBrakeKuksaBackend : public ChassisBrakeBackendInterface
 
 public:
     explicit ChassisBrakeKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~ChassisBrakeKuksaBackend() override;
     void initialize() override;
 
     void setIsParkingBrakeEngaged(bool isParkingBrakeEngaged) override;
@@ -82,7 +87,7 @@ public:
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 #endif // CHASSISBACKENDS_H

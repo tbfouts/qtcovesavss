@@ -11,10 +11,18 @@ DriverMonitoringKuksaBackend::DriverMonitoringKuksaBackend(KuksaClient *client, 
     : DriverMonitoringBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Driver.DriverMonitoring"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Driver.DriverMonitoring"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+DriverMonitoringKuksaBackend::~DriverMonitoringKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Driver.DriverMonitoring"));
 }
 
 void DriverMonitoringKuksaBackend::initialize()

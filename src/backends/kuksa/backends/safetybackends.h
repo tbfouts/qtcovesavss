@@ -1,6 +1,7 @@
 #ifndef SAFETYBACKENDS_H
 #define SAFETYBACKENDS_H
 
+#include <QPointer>
 #include <crashdetectionbackendinterface.h>
 #include <airbagsystembackendinterface.h>
 #include <beltsystembackendinterface.h>
@@ -17,12 +18,13 @@ class CrashDetectionKuksaBackend : public CrashDetectionBackendInterface
 
 public:
     explicit CrashDetectionKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~CrashDetectionKuksaBackend() override;
     void initialize() override;
 
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -35,13 +37,14 @@ class AirbagSystemKuksaBackend : public AirbagSystemBackendInterface
 
 public:
     explicit AirbagSystemKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~AirbagSystemKuksaBackend() override;
     void initialize() override;
     QStringList availableZones() const override;
 
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -54,13 +57,14 @@ class BeltSystemKuksaBackend : public BeltSystemBackendInterface
 
 public:
     explicit BeltSystemKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~BeltSystemKuksaBackend() override;
     void initialize() override;
     QStringList availableZones() const override;
 
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 #endif // SAFETYBACKENDS_H

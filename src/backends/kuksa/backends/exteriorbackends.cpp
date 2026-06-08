@@ -11,10 +11,18 @@ EnvironmentSensorsKuksaBackend::EnvironmentSensorsKuksaBackend(KuksaClient *clie
     : EnvironmentSensorsBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Exterior.EnvironmentSensors"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Exterior.EnvironmentSensors"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+EnvironmentSensorsKuksaBackend::~EnvironmentSensorsKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Exterior.EnvironmentSensors"));
 }
 
 void EnvironmentSensorsKuksaBackend::initialize()

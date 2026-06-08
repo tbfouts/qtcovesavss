@@ -12,10 +12,18 @@ BodyControlKuksaBackend::BodyControlKuksaBackend(KuksaClient *client, QObject *p
     : BodyControlBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Body.BodyControl"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Body.BodyControl"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+BodyControlKuksaBackend::~BodyControlKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Body.BodyControl"));
 }
 
 void BodyControlKuksaBackend::initialize()
@@ -25,6 +33,7 @@ void BodyControlKuksaBackend::initialize()
 
 void BodyControlKuksaBackend::setIsTrunkLocked(bool isTrunkLocked)
 {
+    if (!m_client) return;
     const QString path = VssPathMapping::vssPath(
         QStringLiteral("COVESA.VSS.Body.BodyControl"),
         QStringLiteral("isTrunkLocked"));
@@ -56,10 +65,18 @@ BodyLightsKuksaBackend::BodyLightsKuksaBackend(KuksaClient *client, QObject *par
     : BodyLightsBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Body.BodyLights"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Body.BodyLights"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+BodyLightsKuksaBackend::~BodyLightsKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Body.BodyLights"));
 }
 
 void BodyLightsKuksaBackend::initialize()
@@ -69,6 +86,7 @@ void BodyLightsKuksaBackend::initialize()
 
 void BodyLightsKuksaBackend::setLightSwitch(Common::LightSwitch lightSwitch)
 {
+    if (!m_client) return;
     const QString path = VssPathMapping::vssPath(
         QStringLiteral("COVESA.VSS.Body.BodyLights"),
         QStringLiteral("lightSwitch"));
@@ -77,6 +95,7 @@ void BodyLightsKuksaBackend::setLightSwitch(Common::LightSwitch lightSwitch)
 
 void BodyLightsKuksaBackend::setIsHighBeamOn(bool isHighBeamOn)
 {
+    if (!m_client) return;
     const QString path = VssPathMapping::vssPath(
         QStringLiteral("COVESA.VSS.Body.BodyLights"),
         QStringLiteral("isHighBeamOn"));
@@ -85,6 +104,7 @@ void BodyLightsKuksaBackend::setIsHighBeamOn(bool isHighBeamOn)
 
 void BodyLightsKuksaBackend::setIsLowBeamOn(bool isLowBeamOn)
 {
+    if (!m_client) return;
     const QString path = VssPathMapping::vssPath(
         QStringLiteral("COVESA.VSS.Body.BodyLights"),
         QStringLiteral("isLowBeamOn"));
@@ -93,6 +113,7 @@ void BodyLightsKuksaBackend::setIsLowBeamOn(bool isLowBeamOn)
 
 void BodyLightsKuksaBackend::setIsFogFrontOn(bool isFogFrontOn)
 {
+    if (!m_client) return;
     const QString path = VssPathMapping::vssPath(
         QStringLiteral("COVESA.VSS.Body.BodyLights"),
         QStringLiteral("isFogFrontOn"));
@@ -101,6 +122,7 @@ void BodyLightsKuksaBackend::setIsFogFrontOn(bool isFogFrontOn)
 
 void BodyLightsKuksaBackend::setIsFogRearOn(bool isFogRearOn)
 {
+    if (!m_client) return;
     const QString path = VssPathMapping::vssPath(
         QStringLiteral("COVESA.VSS.Body.BodyLights"),
         QStringLiteral("isFogRearOn"));
@@ -109,6 +131,7 @@ void BodyLightsKuksaBackend::setIsFogRearOn(bool isFogRearOn)
 
 void BodyLightsKuksaBackend::setIsParkingOn(bool isParkingOn)
 {
+    if (!m_client) return;
     const QString path = VssPathMapping::vssPath(
         QStringLiteral("COVESA.VSS.Body.BodyLights"),
         QStringLiteral("isParkingOn"));
@@ -117,6 +140,7 @@ void BodyLightsKuksaBackend::setIsParkingOn(bool isParkingOn)
 
 void BodyLightsKuksaBackend::setIsHazardOn(bool isHazardOn)
 {
+    if (!m_client) return;
     const QString path = VssPathMapping::vssPath(
         QStringLiteral("COVESA.VSS.Body.BodyLights"),
         QStringLiteral("isHazardOn"));
@@ -125,6 +149,7 @@ void BodyLightsKuksaBackend::setIsHazardOn(bool isHazardOn)
 
 void BodyLightsKuksaBackend::setInteriorBrightness(int interiorBrightness)
 {
+    if (!m_client) return;
     const QString path = VssPathMapping::vssPath(
         QStringLiteral("COVESA.VSS.Body.BodyLights"),
         QStringLiteral("interiorBrightness"));
@@ -166,10 +191,18 @@ WindshieldKuksaBackend::WindshieldKuksaBackend(KuksaClient *client, QObject *par
     : WindshieldBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Body.Windshield"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Body.Windshield"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+WindshieldKuksaBackend::~WindshieldKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Body.Windshield"));
 }
 
 void WindshieldKuksaBackend::initialize()
@@ -184,6 +217,7 @@ QStringList WindshieldKuksaBackend::availableZones() const
 
 void WindshieldKuksaBackend::setWiperMode(Common::WiperMode wiperMode, const QString &zone)
 {
+    if (!m_client) return;
     const QString path = VssPathMapping::vssPath(
         QStringLiteral("COVESA.VSS.Body.Windshield"),
         QStringLiteral("wiperMode"), zone);
@@ -192,6 +226,7 @@ void WindshieldKuksaBackend::setWiperMode(Common::WiperMode wiperMode, const QSt
 
 void WindshieldKuksaBackend::setIsHeatingOn(bool isHeatingOn, const QString &zone)
 {
+    if (!m_client) return;
     const QString path = VssPathMapping::vssPath(
         QStringLiteral("COVESA.VSS.Body.Windshield"),
         QStringLiteral("isHeatingOn"), zone);
@@ -220,10 +255,18 @@ BodyMirrorsKuksaBackend::BodyMirrorsKuksaBackend(KuksaClient *client, QObject *p
     : BodyMirrorsBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Body.BodyMirrors"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Body.BodyMirrors"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+BodyMirrorsKuksaBackend::~BodyMirrorsKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Body.BodyMirrors"));
 }
 
 void BodyMirrorsKuksaBackend::initialize()
@@ -238,6 +281,7 @@ QStringList BodyMirrorsKuksaBackend::availableZones() const
 
 void BodyMirrorsKuksaBackend::setTilt(int tilt, const QString &zone)
 {
+    if (!m_client) return;
     const QString path = VssPathMapping::vssPath(
         QStringLiteral("COVESA.VSS.Body.BodyMirrors"),
         QStringLiteral("tilt"), zone);
@@ -246,6 +290,7 @@ void BodyMirrorsKuksaBackend::setTilt(int tilt, const QString &zone)
 
 void BodyMirrorsKuksaBackend::setPan(int pan, const QString &zone)
 {
+    if (!m_client) return;
     const QString path = VssPathMapping::vssPath(
         QStringLiteral("COVESA.VSS.Body.BodyMirrors"),
         QStringLiteral("pan"), zone);
@@ -254,6 +299,7 @@ void BodyMirrorsKuksaBackend::setPan(int pan, const QString &zone)
 
 void BodyMirrorsKuksaBackend::setIsHeatingOn(bool isHeatingOn, const QString &zone)
 {
+    if (!m_client) return;
     const QString path = VssPathMapping::vssPath(
         QStringLiteral("COVESA.VSS.Body.BodyMirrors"),
         QStringLiteral("isHeatingOn"), zone);
@@ -262,6 +308,7 @@ void BodyMirrorsKuksaBackend::setIsHeatingOn(bool isHeatingOn, const QString &zo
 
 void BodyMirrorsKuksaBackend::setIsFolded(bool isFolded, const QString &zone)
 {
+    if (!m_client) return;
     const QString path = VssPathMapping::vssPath(
         QStringLiteral("COVESA.VSS.Body.BodyMirrors"),
         QStringLiteral("isFolded"), zone);

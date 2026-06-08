@@ -41,6 +41,7 @@ public:
                                              const QString &zone,
                                              const QVariant &value)>;
     void registerBackend(const QString &iid, ValueCallback callback);
+    void unregisterBackend(const QString &iid);
 
     // Invoke a registered backend callback directly (for testing and
     // alternative data sources that bypass gRPC/VSS path resolution).

@@ -12,10 +12,18 @@ CrashDetectionKuksaBackend::CrashDetectionKuksaBackend(KuksaClient *client, QObj
     : CrashDetectionBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Safety.CrashDetection"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Safety.CrashDetection"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+CrashDetectionKuksaBackend::~CrashDetectionKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Safety.CrashDetection"));
 }
 
 void CrashDetectionKuksaBackend::initialize()
@@ -48,10 +56,18 @@ AirbagSystemKuksaBackend::AirbagSystemKuksaBackend(KuksaClient *client, QObject 
     : AirbagSystemBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Safety.AirbagSystem"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Safety.AirbagSystem"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+AirbagSystemKuksaBackend::~AirbagSystemKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Safety.AirbagSystem"));
 }
 
 void AirbagSystemKuksaBackend::initialize()
@@ -81,10 +97,18 @@ BeltSystemKuksaBackend::BeltSystemKuksaBackend(KuksaClient *client, QObject *par
     : BeltSystemBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Safety.BeltSystem"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Safety.BeltSystem"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+BeltSystemKuksaBackend::~BeltSystemKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Safety.BeltSystem"));
 }
 
 void BeltSystemKuksaBackend::initialize()

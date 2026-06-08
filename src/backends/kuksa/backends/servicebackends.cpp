@@ -11,10 +11,18 @@ ServiceStatusKuksaBackend::ServiceStatusKuksaBackend(KuksaClient *client, QObjec
     : ServiceStatusBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Service.ServiceStatus"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Service.ServiceStatus"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+ServiceStatusKuksaBackend::~ServiceStatusKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Service.ServiceStatus"));
 }
 
 void ServiceStatusKuksaBackend::initialize()

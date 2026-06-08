@@ -1,6 +1,7 @@
 #ifndef ADASBACKENDS_H
 #define ADASBACKENDS_H
 
+#include <QPointer>
 #include <adascontrolbackendinterface.h>
 #include <cruisecontrolbackendinterface.h>
 #include <obstacledetectionbackendinterface.h>
@@ -18,6 +19,7 @@ class ADASControlKuksaBackend : public ADASControlBackendInterface
 
 public:
     explicit ADASControlKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~ADASControlKuksaBackend() override;
     void initialize() override;
 
     void setIsAEBEnabled(bool isAEBEnabled) override;
@@ -30,7 +32,7 @@ public:
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -43,6 +45,7 @@ class CruiseControlKuksaBackend : public CruiseControlBackendInterface
 
 public:
     explicit CruiseControlKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~CruiseControlKuksaBackend() override;
     void initialize() override;
 
     void setIsEnabled(bool isEnabled) override;
@@ -52,7 +55,7 @@ public:
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 // ---------------------------------------------------------------------------
@@ -65,6 +68,7 @@ class ObstacleDetectionKuksaBackend : public ObstacleDetectionBackendInterface
 
 public:
     explicit ObstacleDetectionKuksaBackend(KuksaClient *client, QObject *parent = nullptr);
+    ~ObstacleDetectionKuksaBackend() override;
     void initialize() override;
     QStringList availableZones() const override;
 
@@ -73,7 +77,7 @@ public:
 private:
     void onVssValue(const QString &property, const QString &zone, const QVariant &value);
 
-    KuksaClient *m_client;
+    QPointer<KuksaClient> m_client;
 };
 
 #endif // ADASBACKENDS_H

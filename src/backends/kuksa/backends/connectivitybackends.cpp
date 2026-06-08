@@ -12,10 +12,18 @@ ConnectivityControlKuksaBackend::ConnectivityControlKuksaBackend(KuksaClient *cl
     : ConnectivityControlBackendInterface(parent)
     , m_client(client)
 {
-    m_client->registerBackend(QStringLiteral("COVESA.VSS.Connectivity.ConnectivityControl"),
-        [this](const QString &property, const QString &zone, const QVariant &value) {
-            onVssValue(property, zone, value);
-        });
+    if (m_client) {
+        m_client->registerBackend(QStringLiteral("COVESA.VSS.Connectivity.ConnectivityControl"),
+            [this](const QString &property, const QString &zone, const QVariant &value) {
+                onVssValue(property, zone, value);
+            });
+    }
+}
+
+ConnectivityControlKuksaBackend::~ConnectivityControlKuksaBackend()
+{
+    if (m_client)
+        m_client->unregisterBackend(QStringLiteral("COVESA.VSS.Connectivity.ConnectivityControl"));
 }
 
 void ConnectivityControlKuksaBackend::initialize()
@@ -25,6 +33,7 @@ void ConnectivityControlKuksaBackend::initialize()
 
 void ConnectivityControlKuksaBackend::setIsWifiHotspotEnabled(bool isWifiHotspotEnabled)
 {
+    if (!m_client) return;
     static const QString iid = QStringLiteral("COVESA.VSS.Connectivity.ConnectivityControl");
     m_client->actuate(VssPathMapping::vssPath(iid, QStringLiteral("isWifiHotspotEnabled")), isWifiHotspotEnabled);
 }

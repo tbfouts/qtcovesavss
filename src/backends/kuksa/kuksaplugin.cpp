@@ -19,7 +19,7 @@
 
 KuksaPlugin::KuksaPlugin(QObject *parent)
     : QObject(parent)
-    , m_client(std::make_unique<KuksaClient>(this))
+    , m_client(std::make_unique<KuksaClient>())
 {
     createBackends();
 
