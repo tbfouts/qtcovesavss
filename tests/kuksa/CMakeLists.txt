@@ -2,7 +2,7 @@ set(CMAKE_AUTOMOC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Test Protobuf ProtobufWellKnownTypes Grpc)
 
-set(KUKSA_SRC ${CMAKE_SOURCE_DIR}/src/backends/kuksa)
+set(KUKSA_SRC ${CMAKE_SOURCE_DIR}/src/plugins/kuksa)
 
 qt_add_executable(tst_kuksa
     tst_kuksabackends.cpp

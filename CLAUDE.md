@@ -29,7 +29,7 @@ QFace IDL files (`idl/*.qface`) are processed by `ifcodegen` at CMake configure 
 
 No hand-written C++ exists for the signal classes. All domain logic comes from the IDL files.
 
-A KUKSA Databroker backend plugin (`src/backends/kuksa/`) connects to Eclipse KUKSA via gRPC to provide live VSS data. It is conditionally built when Qt Protobuf and Grpc modules are available. Backend plugins live under `src/backends/` to separate them from the frontend modules.
+A KUKSA Databroker backend plugin (`src/plugins/kuksa/`) connects to Eclipse KUKSA via gRPC to provide live VSS data. It is conditionally built when Qt Protobuf and Grpc modules are available. Backend plugins live under `src/plugins/` to separate them from the frontend modules.
 
 ### Module Dependency Chain
 
@@ -46,7 +46,7 @@ Common (idl/common.qface)          -- shared enums only, no interfaces
 
 ### KUKSA Backend Plugin
 
-Located in `src/backends/kuksa/`. A single Qt IF backend plugin that connects all 36 interfaces to a KUKSA Databroker via gRPC.
+Located in `src/plugins/kuksa/`. A single Qt IF backend plugin that connects all 36 interfaces to a KUKSA Databroker via gRPC.
 
 Key classes:
 - **KuksaPlugin** (`kuksaplugin.h/cpp`): `QIfServiceInterface` implementation, creates all 36 backend objects and the gRPC client. Accepts `host`/`port` via `updateServiceSettings()`.
@@ -54,7 +54,7 @@ Key classes:
 - **VssPathMapping** (`vsspathmapping.h/cpp`): Static bidirectional lookup table mapping `(IID, property, zone)` to VSS paths and back. ~200 entries.
 - **Backend classes** (`backends/*.h/cpp`): 36 classes (24 non-zoned + 12 zoned) inheriting from generated `*BackendInterface` classes. Each connects to `KuksaClient::valueChanged`, filters by IID, and emits typed signals.
 
-Proto files are vendored from `eclipse-kuksa/kuksa-databroker` in `src/backends/kuksa/proto/kuksa/val/v2/`. The import in `val.proto` was changed to `import "types.proto"` (relative) because Qt's `qt_add_protobuf` auto-adds the proto file directory as a protoc include path.
+Proto files are vendored from `eclipse-kuksa/kuksa-databroker` in `src/plugins/kuksa/proto/kuksa/val/v2/`. The import in `val.proto` was changed to `import "types.proto"` (relative) because Qt's `qt_add_protobuf` auto-adds the proto file directory as a protoc include path.
 
 ### CMake Target Patterns
 

@@ -14,5 +14,5 @@ add_subdirectory(motionmanagement)
 
 find_package(Qt6 COMPONENTS Protobuf Grpc QUIET)
 if(Qt6Protobuf_FOUND AND Qt6Grpc_FOUND)
-    add_subdirectory(backends/kuksa)
+    add_subdirectory(plugins/kuksa)
 endif()

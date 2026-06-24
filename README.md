@@ -10,7 +10,7 @@ This library provides 600+ vehicle data signals organized into 12 QML modules, e
 
 - **Qt 6.10+** with the following modules:
   - Qt Core
-  - Qt Interface Framework (requires Qt for Device Creation license or building Qt IF from source)
+  - Qt Interface Framework
   - Qt Qml
   - Qt Quick
   - Qt Protobuf + Qt Grpc (optional, for KUKSA backend plugin)
@@ -106,7 +106,7 @@ The shared `covesavss_common` library (enums) is linked automatically via each f
 
 ### KUKSA Databroker Backend
 
-The library includes a backend plugin (`src/backends/kuksa/`) that connects to [Eclipse KUKSA Databroker](https://github.com/eclipse-kuksa/kuksa-databroker) via gRPC. It is built automatically when Qt Protobuf and Qt Grpc modules are available.
+The library includes a backend plugin (`src/plugins/kuksa/`) that connects to [Eclipse KUKSA Databroker](https://github.com/eclipse-kuksa/kuksa-databroker) via gRPC. It is built automatically when Qt Protobuf and Qt Grpc modules are available.
 
 **Running with KUKSA:**
 
@@ -137,7 +137,7 @@ docker run --rm -d --name kuksa-mock --network kuksa-net \
 
 **Configuration:** The plugin reads `KUKSA_HOST` and `KUKSA_PORT` environment variables. It can also be configured at runtime via `updateServiceSettings({"host": "...", "port": ...})` through the Qt Interface Framework service settings system.
 
-**Plugin discovery:** Place the plugin `.dylib`/`.so` in an `interfaceframework/` directory on `QT_PLUGIN_PATH`. The build places it at `build/src/backends/kuksa/libcovesavss_kuksa_backend.dylib`.
+**Plugin discovery:** Place the plugin `.dylib`/`.so` in an `interfaceframework/` directory on `QT_PLUGIN_PATH`. The build places it at `build/src/plugins/kuksa/libcovesavss_kuksa_backend.dylib`.
 
 ### Custom Backends
 
@@ -253,13 +253,13 @@ Shared enums are in the `Common` module, imported automatically by all domain mo
            │ runtime plugin discovery
            v
 ┌─────────────────────────────────────────────────────────────────┐
-│                     Backend Plugins                              │
-│                     (src/backends/)                              │
+│                     Backend Plugins                             │
+│                     (src/plugins/)                              │
 │                                                                 │
 │  ┌─────────────────────────────────────────────────────────┐    │
-│  │  KUKSA Backend (src/backends/kuksa/)                    │    │
+│  │  KUKSA Backend (src/plugins/kuksa/)                     │    │
 │  │                                                         │    │
-│  │  KuksaPlugin ──> KuksaClient ──> gRPC ──> KUKSA        │    │
+│  │  KuksaPlugin ──> KuksaClient ──> gRPC ──> KUKSA         │    │
 │  │       │              │            Databroker            │    │
 │  │       │              v                                  │    │
 │  │       │        VssPathMapping                           │    │
@@ -271,7 +271,7 @@ Shared enums are in the `Common` module, imported automatically by all domain mo
 │  └─────────────────────────────────────────────────────────┘    │
 │                                                                 │
 │  ┌─────────────────────────────────────────────────────────┐    │
-│  │  Your Backend (src/backends/yourbackend/)               │    │
+│  │  Your Backend (src/plugins/yourbackend/)                │    │
 │  │  CAN bus, SOME/IP, simulation, replay, ...              │    │
 │  └─────────────────────────────────────────────────────────┘    │
 └─────────────────────────────────────────────────────────────────┘
@@ -302,7 +302,7 @@ The `Common` module (`idl/common.qface`) defines shared enums used across all do
 idl/                    QFace IDL files (source of truth)
 src/common/             Shared enum library (covesavss_common)
 src/<module>/           Per-module frontend library (12 modules)
-src/backends/kuksa/     KUKSA Databroker backend plugin (gRPC, optional)
+src/plugins/kuksa/      KUKSA Databroker backend plugin (gRPC, optional)
 tests/                  Auto-generated test suites per module + backend tests
 examples/               Dashboard example app + KUKSA mock config
 ```
