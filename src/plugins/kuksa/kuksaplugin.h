@@ -25,7 +25,7 @@ public:
 
 private:
     void createBackends();
-    void connectToDatabroker(const QString &host, int port);
+    void connectToDatabroker(const QString &host, int port, bool tls = false);
 
     std::unique_ptr<KuksaClient> m_client;
     QHash<QString, QIfFeatureInterface *> m_backends;

@@ -3,6 +3,7 @@
 #include "../vsspathmapping.h"
 
 #include <common.h>
+#include "../enumvalidation.h"
 
 // ===========================================================================
 // ADASControlKuksaBackend
@@ -77,9 +78,9 @@ void ADASControlKuksaBackend::onVssValue(const QString &property, const QString 
 {
     Q_UNUSED(zone)
     if (property == QLatin1String("activeAutonomyLevel"))
-        emit activeAutonomyLevelChanged(static_cast<Common::AutonomyLevel>(value.toInt()));
+        emit activeAutonomyLevelChanged(validatedEnum<Common::AutonomyLevel>(value, 5));
     else if (property == QLatin1String("supportedAutonomyLevel"))
-        emit supportedAutonomyLevelChanged(static_cast<Common::AutonomyLevel>(value.toInt()));
+        emit supportedAutonomyLevelChanged(validatedEnum<Common::AutonomyLevel>(value, 5));
     else if (property == QLatin1String("isAEBEnabled"))
         emit isAEBEnabledChanged(value.toBool());
     else if (property == QLatin1String("isAEBActive"))
@@ -105,13 +106,13 @@ void ADASControlKuksaBackend::onVssValue(const QString &property, const QString 
     else if (property == QLatin1String("isTCSError"))
         emit isTCSErrorChanged(value.toBool());
     else if (property == QLatin1String("laneDepartureState"))
-        emit laneDepartureStateChanged(static_cast<Common::LaneDepartureState>(value.toInt()));
+        emit laneDepartureStateChanged(validatedEnum<Common::LaneDepartureState>(value, 4));
     else if (property == QLatin1String("isLaneDepartureEnabled"))
         emit isLaneDepartureEnabledChanged(value.toBool());
     else if (property == QLatin1String("isLaneDepartureWarning"))
         emit isLaneDepartureWarningChanged(value.toBool());
     else if (property == QLatin1String("blindSpotState"))
-        emit blindSpotStateChanged(static_cast<Common::BlindSpotState>(value.toInt()));
+        emit blindSpotStateChanged(validatedEnum<Common::BlindSpotState>(value, 3));
     else if (property == QLatin1String("isBlindSpotEnabled"))
         emit isBlindSpotEnabledChanged(value.toBool());
 }
@@ -176,7 +177,7 @@ void CruiseControlKuksaBackend::onVssValue(const QString &property, const QStrin
     else if (property == QLatin1String("speedSet"))
         emit speedSetChanged(value.toReal());
     else if (property == QLatin1String("mode"))
-        emit modeChanged(static_cast<Common::CruiseControlMode>(value.toInt()));
+        emit modeChanged(validatedEnum<Common::CruiseControlMode>(value, 4));
     else if (property == QLatin1String("targetGap"))
         emit targetGapChanged(value.toReal());
     else if (property == QLatin1String("isAdaptive"))
@@ -228,7 +229,7 @@ void ObstacleDetectionKuksaBackend::onVssValue(const QString &property, const QS
     if (property == QLatin1String("distance"))
         emit distanceChanged(value.toReal(), zone);
     else if (property == QLatin1String("warningLevel"))
-        emit warningLevelChanged(static_cast<Common::ObstacleWarningLevel>(value.toInt()), zone);
+        emit warningLevelChanged(validatedEnum<Common::ObstacleWarningLevel>(value, 4), zone);
     else if (property == QLatin1String("isEnabled"))
         emit isEnabledChanged(value.toBool(), zone);
     else if (property == QLatin1String("isDetected"))

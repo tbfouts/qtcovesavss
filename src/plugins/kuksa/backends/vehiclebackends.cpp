@@ -2,6 +2,7 @@
 #include "../kuksaclient.h"
 
 #include <common.h>
+#include "../enumvalidation.h"
 
 // ===========================================================================
 // VehicleIdentificationKuksaBackend
@@ -146,7 +147,7 @@ void CurrentLocationKuksaBackend::onVssValue(const QString &property, const QStr
     else if (property == QLatin1String("verticalAccuracy"))
         emit verticalAccuracyChanged(value.toReal());
     else if (property == QLatin1String("gnssFixType"))
-        emit gnssFixTypeChanged(static_cast<Common::GNSSFixType>(value.toInt()));
+        emit gnssFixTypeChanged(validatedEnum<Common::GNSSFixType>(value, 7));
     else if (property == QLatin1String("timestamp"))
         emit timestampChanged(value.toString());
 }

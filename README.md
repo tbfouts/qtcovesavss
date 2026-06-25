@@ -19,8 +19,6 @@ This library provides 600+ vehicle data signals organized into 12 QML modules, e
 - CMake 3.16+
 - C++17 compiler
 
-> **Note:** Qt Interface Framework is not included in the default open-source Qt installation. It is available with a Qt for Device Creation license, or can be built from source from the [qt/qtinterfaceframework](https://code.qt.io/cgit/qt/qtinterfaceframework.git/) repository.
-
 ## Getting Started
 
 ### Clone

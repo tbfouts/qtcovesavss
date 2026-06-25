@@ -3,6 +3,7 @@
 #include "../vsspathmapping.h"
 
 #include <common.h>
+#include "../enumvalidation.h"
 
 // ===========================================================================
 // ConnectivityControlKuksaBackend
@@ -42,7 +43,7 @@ void ConnectivityControlKuksaBackend::onVssValue(const QString &property, const 
 {
     Q_UNUSED(zone)
     if (property == QLatin1String("cellularStatus"))
-        emit cellularStatusChanged(static_cast<Common::ConnectivityStatus>(value.toInt()));
+        emit cellularStatusChanged(validatedEnum<Common::ConnectivityStatus>(value, 3));
     else if (property == QLatin1String("cellularSignalStrength"))
         emit cellularSignalStrengthChanged(value.toInt());
     else if (property == QLatin1String("cellularNetworkType"))
@@ -50,7 +51,7 @@ void ConnectivityControlKuksaBackend::onVssValue(const QString &property, const 
     else if (property == QLatin1String("cellularOperator"))
         emit cellularOperatorChanged(value.toString());
     else if (property == QLatin1String("wifiStatus"))
-        emit wifiStatusChanged(static_cast<Common::ConnectivityStatus>(value.toInt()));
+        emit wifiStatusChanged(validatedEnum<Common::ConnectivityStatus>(value, 3));
     else if (property == QLatin1String("wifiSignalStrength"))
         emit wifiSignalStrengthChanged(value.toInt());
     else if (property == QLatin1String("wifiSSID"))
@@ -58,7 +59,7 @@ void ConnectivityControlKuksaBackend::onVssValue(const QString &property, const 
     else if (property == QLatin1String("isWifiHotspotEnabled"))
         emit isWifiHotspotEnabledChanged(value.toBool());
     else if (property == QLatin1String("bluetoothStatus"))
-        emit bluetoothStatusChanged(static_cast<Common::ConnectivityStatus>(value.toInt()));
+        emit bluetoothStatusChanged(validatedEnum<Common::ConnectivityStatus>(value, 3));
     else if (property == QLatin1String("bluetoothPairedDevices"))
         emit bluetoothPairedDevicesChanged(value.toInt());
     else if (property == QLatin1String("isBluetoothEnabled"))

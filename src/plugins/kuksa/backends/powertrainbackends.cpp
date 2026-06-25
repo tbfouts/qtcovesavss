@@ -3,6 +3,7 @@
 #include "../vsspathmapping.h"
 
 #include <common.h>
+#include "../enumvalidation.h"
 
 // ===========================================================================
 // PowertrainStatusKuksaBackend
@@ -35,7 +36,7 @@ void PowertrainStatusKuksaBackend::onVssValue(const QString &property, const QSt
 {
     Q_UNUSED(zone)
     if (property == QLatin1String("type"))
-        emit typeChanged(static_cast<Common::PowertrainType>(value.toInt()));
+        emit typeChanged(validatedEnum<Common::PowertrainType>(value, 3));
     else if (property == QLatin1String("accumulatedBrakingEnergy"))
         emit accumulatedBrakingEnergyChanged(value.toReal());
     else if (property == QLatin1String("range"))
@@ -73,7 +74,7 @@ void CombustionEngineKuksaBackend::onVssValue(const QString &property, const QSt
 {
     Q_UNUSED(zone)
     if (property == QLatin1String("engineState"))
-        emit engineStateChanged(static_cast<Common::EngineState>(value.toInt()));
+        emit engineStateChanged(validatedEnum<Common::EngineState>(value, 4));
     else if (property == QLatin1String("speed"))
         emit speedChanged(value.toInt());
     else if (property == QLatin1String("engineHours"))
@@ -147,11 +148,11 @@ void TransmissionKuksaBackend::onVssValue(const QString &property, const QString
 {
     Q_UNUSED(zone)
     if (property == QLatin1String("type"))
-        emit typeChanged(static_cast<Common::TransmissionGearType>(value.toInt()));
+        emit typeChanged(validatedEnum<Common::TransmissionGearType>(value, 3));
     else if (property == QLatin1String("gearCount"))
         emit gearCountChanged(value.toInt());
     else if (property == QLatin1String("driveType"))
-        emit driveTypeChanged(static_cast<Common::TransmissionDriveType>(value.toInt()));
+        emit driveTypeChanged(validatedEnum<Common::TransmissionDriveType>(value, 3));
     else if (property == QLatin1String("currentGear"))
         emit currentGearChanged(value.toInt());
     else if (property == QLatin1String("selectedGear"))
@@ -159,7 +160,7 @@ void TransmissionKuksaBackend::onVssValue(const QString &property, const QString
     else if (property == QLatin1String("isParkLockEngaged"))
         emit isParkLockEngagedChanged(value.toBool());
     else if (property == QLatin1String("performanceMode"))
-        emit performanceModeChanged(static_cast<Common::TransmissionPerformanceMode>(value.toInt()));
+        emit performanceModeChanged(validatedEnum<Common::TransmissionPerformanceMode>(value, 4));
     else if (property == QLatin1String("temperature"))
         emit temperatureChanged(value.toReal());
     else if (property == QLatin1String("clutchWear"))
@@ -221,7 +222,7 @@ void ElectricMotorKuksaBackend::onVssValue(const QString &property, const QStrin
     else if (property == QLatin1String("torque"))
         emit torqueChanged(value.toReal(), zone);
     else if (property == QLatin1String("operatingMode"))
-        emit operatingModeChanged(static_cast<Common::ElectricMotorMode>(value.toInt()), zone);
+        emit operatingModeChanged(validatedEnum<Common::ElectricMotorMode>(value, 3), zone);
 }
 
 // ===========================================================================
@@ -289,9 +290,9 @@ void TractionBatteryKuksaBackend::onVssValue(const QString &property, const QStr
     else if (property == QLatin1String("accumulatedConsumedEnergy"))
         emit accumulatedConsumedEnergyChanged(value.toReal());
     else if (property == QLatin1String("chargingStatus"))
-        emit chargingStatusChanged(static_cast<Common::ChargingStatus>(value.toInt()));
+        emit chargingStatusChanged(validatedEnum<Common::ChargingStatus>(value, 4));
     else if (property == QLatin1String("chargePlugType"))
-        emit chargePlugTypeChanged(static_cast<Common::ChargePlugType>(value.toInt()));
+        emit chargePlugTypeChanged(validatedEnum<Common::ChargePlugType>(value, 6));
     else if (property == QLatin1String("isCharging"))
         emit isChargingChanged(value.toBool());
     else if (property == QLatin1String("isChargingCableConnected"))
@@ -335,7 +336,7 @@ void FuelSystemKuksaBackend::onVssValue(const QString &property, const QString &
 {
     Q_UNUSED(zone)
     if (property == QLatin1String("supportedFuelType"))
-        emit supportedFuelTypeChanged(static_cast<Common::FuelType>(value.toInt()));
+        emit supportedFuelTypeChanged(validatedEnum<Common::FuelType>(value, 7));
     else if (property == QLatin1String("fuelLevel"))
         emit fuelLevelChanged(value.toReal());
     else if (property == QLatin1String("range"))

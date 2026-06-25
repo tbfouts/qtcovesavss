@@ -52,9 +52,10 @@ qt_add_grpc(covesavss_kuksa_backend CLIENT
 )
 
 # Place the plugin where Qt IF can discover it during development builds:
-#   <build>/plugins/interfaceframework/libcovesavss_kuksa_backend.dylib
+#   <build>/plugins/interfaceframework/<plugin-lib>
 set_target_properties(covesavss_kuksa_backend PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/plugins/interfaceframework"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/plugins/interfaceframework"
 )
 
 target_link_libraries(covesavss_kuksa_backend PRIVATE

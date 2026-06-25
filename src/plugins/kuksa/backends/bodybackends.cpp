@@ -3,6 +3,7 @@
 #include "../vsspathmapping.h"
 
 #include <common.h>
+#include "../enumvalidation.h"
 
 // ===========================================================================
 // BodyControlKuksaBackend
@@ -46,7 +47,7 @@ void BodyControlKuksaBackend::onVssValue(const QString &property, const QString 
     if (property == QLatin1String("rearMainSpoilerPosition"))
         emit rearMainSpoilerPositionChanged(value.toInt());
     else if (property == QLatin1String("turnSignalState"))
-        emit turnSignalStateChanged(static_cast<Common::TurnSignalState>(value.toInt()));
+        emit turnSignalStateChanged(validatedEnum<Common::TurnSignalState>(value, 3));
     else if (property == QLatin1String("isHoodOpen"))
         emit isHoodOpenChanged(value.toBool());
     else if (property == QLatin1String("isTrunkOpen"))
@@ -160,7 +161,7 @@ void BodyLightsKuksaBackend::onVssValue(const QString &property, const QString &
 {
     Q_UNUSED(zone)
     if (property == QLatin1String("lightSwitch"))
-        emit lightSwitchChanged(static_cast<Common::LightSwitch>(value.toInt()));
+        emit lightSwitchChanged(validatedEnum<Common::LightSwitch>(value, 5));
     else if (property == QLatin1String("isHighBeamOn"))
         emit isHighBeamOnChanged(value.toBool());
     else if (property == QLatin1String("isLowBeamOn"))
@@ -236,7 +237,7 @@ void WindshieldKuksaBackend::setIsHeatingOn(bool isHeatingOn, const QString &zon
 void WindshieldKuksaBackend::onVssValue(const QString &property, const QString &zone, const QVariant &value)
 {
     if (property == QLatin1String("wiperMode"))
-        emit wiperModeChanged(static_cast<Common::WiperMode>(value.toInt()), zone);
+        emit wiperModeChanged(validatedEnum<Common::WiperMode>(value, 5), zone);
     else if (property == QLatin1String("wiperWearLevel"))
         emit wiperWearLevelChanged(value.toInt(), zone);
     else if (property == QLatin1String("isWiperFluidLevelLow"))

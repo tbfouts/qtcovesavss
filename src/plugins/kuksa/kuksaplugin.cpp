@@ -26,10 +26,12 @@ KuksaPlugin::KuksaPlugin(QObject *parent)
     // Auto-connect from environment variables if set
     const QByteArray envHost = qgetenv("KUKSA_HOST");
     const QByteArray envPort = qgetenv("KUKSA_PORT");
+    const QByteArray envTls = qgetenv("KUKSA_TLS");
     if (!envHost.isEmpty()) {
         const QString host = QString::fromUtf8(envHost);
         const int port = envPort.isEmpty() ? 55555 : envPort.toInt();
-        connectToDatabroker(host, port);
+        const bool tls = (envTls == "1" || envTls == "true");
+        connectToDatabroker(host, port, tls);
     }
 }
 
@@ -154,12 +156,14 @@ void KuksaPlugin::updateServiceSettings(const QVariantMap &settings)
     const QString host = settings.value(QStringLiteral("host"),
                                         QStringLiteral("localhost")).toString();
     const int port = settings.value(QStringLiteral("port"), 55555).toInt();
-    connectToDatabroker(host, port);
+    const bool tls = settings.value(QStringLiteral("tls"), false).toBool();
+    connectToDatabroker(host, port, tls);
 }
 
-void KuksaPlugin::connectToDatabroker(const QString &host, int port)
+void KuksaPlugin::connectToDatabroker(const QString &host, int port, bool tls)
 {
-    const QUrl url(QStringLiteral("http://%1:%2").arg(host).arg(port));
+    const QString scheme = tls ? QStringLiteral("https") : QStringLiteral("http");
+    const QUrl url(QStringLiteral("%1://%2:%3").arg(scheme, host).arg(port));
     if (m_client->hostUrl() == url)
         return;
     m_client->setHostUrl(url);

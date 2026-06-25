@@ -26,7 +26,20 @@ void VssPathMapping::Tables::regZoned(const QString &iid, const QString &prop,
         const QString instance = zoneInstance.value(
             iid + QLatin1Char('\0') + zone, zone);
         QString vss = vssTemplate;
-        vss.replace(QLatin1String("*"), instance);
+        const int wildcardCount = vss.count(QLatin1Char('*'));
+        if (wildcardCount > 1) {
+            // Multi-wildcard template (e.g. Axle.*.Wheel.*): split the
+            // instance at '.' and replace each wildcard with one segment.
+            const QStringList segments = instance.split(QLatin1Char('.'));
+            for (const QString &seg : segments) {
+                const int idx = vss.indexOf(QLatin1Char('*'));
+                if (idx < 0)
+                    break;
+                vss.replace(idx, 1, seg);
+            }
+        } else {
+            vss.replace(QLatin1String("*"), instance);
+        }
         const QString key = makeKey3(iid, prop, zone);
         forward.insert(key, vss);
         reverse[vss].append({iid, prop, zone});

@@ -3,6 +3,7 @@
 #include "../vsspathmapping.h"
 
 #include <common.h>
+#include "../enumvalidation.h"
 
 // ===========================================================================
 // ChassisAxleKuksaBackend (zoned: Front, Rear)
@@ -139,7 +140,7 @@ void ChassisSteeringKuksaBackend::onVssValue(const QString &property, const QStr
     else if (property == QLatin1String("steeringWheelExtension"))
         emit steeringWheelExtensionChanged(value.toInt());
     else if (property == QLatin1String("position"))
-        emit positionChanged(static_cast<Common::SteeringWheelPosition>(value.toInt()));
+        emit positionChanged(validatedEnum<Common::SteeringWheelPosition>(value, 1));
 }
 
 // ===========================================================================
@@ -184,11 +185,11 @@ void ChassisBrakeKuksaBackend::onVssValue(const QString &property, const QString
     else if (property == QLatin1String("isDriverBraking"))
         emit isDriverBrakingChanged(value.toBool());
     else if (property == QLatin1String("absStatus"))
-        emit absStatusChanged(static_cast<Common::ABSStatus>(value.toInt()));
+        emit absStatusChanged(validatedEnum<Common::ABSStatus>(value, 2));
     else if (property == QLatin1String("fluidLevelWarning"))
-        emit fluidLevelWarningChanged(static_cast<Common::FluidLevelWarning>(value.toInt()));
+        emit fluidLevelWarningChanged(validatedEnum<Common::FluidLevelWarning>(value, 2));
     else if (property == QLatin1String("isParkingBrakeEngaged"))
         emit isParkingBrakeEngagedChanged(value.toBool());
     else if (property == QLatin1String("parkingBrakeType"))
-        emit parkingBrakeTypeChanged(static_cast<Common::ParkingBrakeType>(value.toInt()));
+        emit parkingBrakeTypeChanged(validatedEnum<Common::ParkingBrakeType>(value, 2));
 }

@@ -2,6 +2,7 @@
 #include "../kuksaclient.h"
 
 #include <common.h>
+#include "../enumvalidation.h"
 
 // ===========================================================================
 // ServiceStatusKuksaBackend
@@ -34,7 +35,7 @@ void ServiceStatusKuksaBackend::onVssValue(const QString &property, const QStrin
 {
     Q_UNUSED(zone)
     if (property == QLatin1String("overallStatus"))
-        emit overallStatusChanged(static_cast<Common::ServiceStatus>(value.toInt()));
+        emit overallStatusChanged(validatedEnum<Common::ServiceStatus>(value, 3));
     else if (property == QLatin1String("distanceToService"))
         emit distanceToServiceChanged(value.toInt());
     else if (property == QLatin1String("timeToService"))

@@ -2,6 +2,7 @@
 #include "../kuksaclient.h"
 
 #include <common.h>
+#include "../enumvalidation.h"
 
 // ===========================================================================
 // EnvironmentSensorsKuksaBackend
@@ -44,7 +45,7 @@ void EnvironmentSensorsKuksaBackend::onVssValue(const QString &property, const Q
     else if (property == QLatin1String("lightIntensity"))
         emit lightIntensityChanged(value.toReal());
     else if (property == QLatin1String("roadCondition"))
-        emit roadConditionChanged(static_cast<Common::RoadSurfaceCondition>(value.toInt()));
+        emit roadConditionChanged(validatedEnum<Common::RoadSurfaceCondition>(value, 4));
     else if (property == QLatin1String("windSpeed"))
         emit windSpeedChanged(value.toReal());
     else if (property == QLatin1String("windDirection"))

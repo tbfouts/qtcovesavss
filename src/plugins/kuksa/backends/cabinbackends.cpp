@@ -3,6 +3,7 @@
 #include "../vsspathmapping.h"
 
 #include <common.h>
+#include "../enumvalidation.h"
 
 // ===========================================================================
 // CabinSeatKuksaBackend
@@ -141,7 +142,7 @@ void CabinSeatKuksaBackend::onVssValue(const QString &property, const QString &z
     else if (property == QLatin1String("isOccupied"))
         emit isOccupiedChanged(value.toBool(), zone);
     else if (property == QLatin1String("occupantStatus"))
-        emit occupantStatusChanged(static_cast<Common::SeatOccupancyStatus>(value.toInt()), zone);
+        emit occupantStatusChanged(validatedEnum<Common::SeatOccupancyStatus>(value, 3), zone);
     else if (property == QLatin1String("isSeatbeltFastened"))
         emit isSeatbeltFastenedChanged(value.toBool(), zone);
 }
@@ -223,9 +224,9 @@ void CabinHVACKuksaBackend::onVssValue(const QString &property, const QString &z
     else if (property == QLatin1String("fanSpeed"))
         emit fanSpeedChanged(value.toInt(), zone);
     else if (property == QLatin1String("fanDirection"))
-        emit fanDirectionChanged(static_cast<Common::HVACFanDirection>(value.toInt()), zone);
+        emit fanDirectionChanged(validatedEnum<Common::HVACFanDirection>(value, 5), zone);
     else if (property == QLatin1String("recirculationMode"))
-        emit recirculationModeChanged(static_cast<Common::RecirculationMode>(value.toInt()), zone);
+        emit recirculationModeChanged(validatedEnum<Common::RecirculationMode>(value, 2), zone);
     else if (property == QLatin1String("isAirConditioningActive"))
         emit isAirConditioningActiveChanged(value.toBool(), zone);
     else if (property == QLatin1String("ambientAirTemperature"))
@@ -277,7 +278,7 @@ void CabinInfotainmentKuksaBackend::onVssValue(const QString &property, const QS
 {
     Q_UNUSED(zone)
     if (property == QLatin1String("currentSource"))
-        emit currentSourceChanged(static_cast<Common::MediaSource>(value.toInt()));
+        emit currentSourceChanged(validatedEnum<Common::MediaSource>(value, 5));
     else if (property == QLatin1String("volume"))
         emit volumeChanged(value.toInt());
     else if (property == QLatin1String("currentTrack"))
@@ -291,7 +292,7 @@ void CabinInfotainmentKuksaBackend::onVssValue(const QString &property, const QS
     else if (property == QLatin1String("selectedLanguage"))
         emit selectedLanguageChanged(value.toString());
     else if (property == QLatin1String("dayNightMode"))
-        emit dayNightModeChanged(static_cast<Common::DayNightMode>(value.toInt()));
+        emit dayNightModeChanged(validatedEnum<Common::DayNightMode>(value, 2));
 }
 
 // ===========================================================================
@@ -352,7 +353,7 @@ void CabinDoorKuksaBackend::onVssValue(const QString &property, const QString &z
     else if (property == QLatin1String("isChildLockActive"))
         emit isChildLockActiveChanged(value.toBool(), zone);
     else if (property == QLatin1String("doorState"))
-        emit doorStateChanged(static_cast<Common::DoorState>(value.toInt()), zone);
+        emit doorStateChanged(validatedEnum<Common::DoorState>(value, 2), zone);
 }
 
 // ===========================================================================

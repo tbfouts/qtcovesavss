@@ -3,6 +3,7 @@
 #include "../vsspathmapping.h"
 
 #include <common.h>
+#include "../enumvalidation.h"
 
 // ===========================================================================
 // BrakeControlKuksaBackend
@@ -160,7 +161,7 @@ void SuspensionControlKuksaBackend::onVssValue(const QString &property, const QS
     else if (property == QLatin1String("heightActual"))
         emit heightActualChanged(value.toInt(), zone);
     else if (property == QLatin1String("mode"))
-        emit modeChanged(static_cast<Common::SuspensionMode>(value.toInt()), zone);
+        emit modeChanged(validatedEnum<Common::SuspensionMode>(value, 3), zone);
     else if (property == QLatin1String("damperForce"))
         emit damperForceChanged(value.toReal(), zone);
 }

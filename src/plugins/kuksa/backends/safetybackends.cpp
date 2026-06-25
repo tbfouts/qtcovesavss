@@ -3,6 +3,7 @@
 #include "../vsspathmapping.h"
 
 #include <common.h>
+#include "../enumvalidation.h"
 
 // ===========================================================================
 // CrashDetectionKuksaBackend
@@ -35,7 +36,7 @@ void CrashDetectionKuksaBackend::onVssValue(const QString &property, const QStri
 {
     Q_UNUSED(zone)
     if (property == QLatin1String("crashStatus"))
-        emit crashStatusChanged(static_cast<Common::CrashStatus>(value.toInt()));
+        emit crashStatusChanged(validatedEnum<Common::CrashStatus>(value, 6));
     else if (property == QLatin1String("crashSeverity"))
         emit crashSeverityChanged(value.toReal());
     else if (property == QLatin1String("isCrashDetected"))
@@ -84,7 +85,7 @@ QStringList AirbagSystemKuksaBackend::availableZones() const
 void AirbagSystemKuksaBackend::onVssValue(const QString &property, const QString &zone, const QVariant &value)
 {
     if (property == QLatin1String("status"))
-        emit statusChanged(static_cast<Common::AirbagStatus>(value.toInt()), zone);
+        emit statusChanged(validatedEnum<Common::AirbagStatus>(value, 2), zone);
     else if (property == QLatin1String("isDeployed"))
         emit isDeployedChanged(value.toBool(), zone);
 }
