@@ -33,15 +33,15 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            qt-build/qtmqtt
-            qt-build/qtinterfaceframework
-          key: qt-src-modules-${{ runner.os }}-6.10.0-v1
+            qt-src
+            qt-build
+          key: qt-src-modules-${{ runner.os }}-6.10.0-v2
 
       - name: Build qtmqtt from source
         if: steps.cache-qt-modules.outputs.cache-hit != 'true'
         run: |
-          git clone --depth 1 --branch v6.10.0 https://code.qt.io/qt/qtmqtt.git /tmp/qtmqtt
-          qt-cmake -S /tmp/qtmqtt -B qt-build/qtmqtt -G Ninja
+          git clone --depth 1 --branch v6.10.0 https://code.qt.io/qt/qtmqtt.git qt-src/qtmqtt
+          qt-cmake -S qt-src/qtmqtt -B qt-build/qtmqtt -G Ninja
           cmake --build qt-build/qtmqtt --parallel
 
       - name: Install qtmqtt
@@ -50,8 +50,8 @@ jobs:
       - name: Build qtinterfaceframework from source
         if: steps.cache-qt-modules.outputs.cache-hit != 'true'
         run: |
-          git clone --depth 1 --branch v6.10.0 --recurse-submodules https://code.qt.io/qt/qtinterfaceframework.git /tmp/qtinterfaceframework
-          qt-cmake -S /tmp/qtinterfaceframework -B qt-build/qtinterfaceframework -G Ninja
+          git clone --depth 1 --branch v6.10.0 --recurse-submodules https://code.qt.io/qt/qtinterfaceframework.git qt-src/qtinterfaceframework
+          qt-cmake -S qt-src/qtinterfaceframework -B qt-build/qtinterfaceframework -G Ninja
           cmake --build qt-build/qtinterfaceframework --parallel
 
       - name: Install qtinterfaceframework
