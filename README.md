@@ -2,6 +2,8 @@
 
 A Qt library wrapping the COVESA Vehicle Signal Specification (VSS) v6.0 as native Qt/QML types. Built with Qt Interface Framework and ifcodegen for automatic code generation from QFace IDL files.
 
+![Dashboard example](doc/images/dashboard.png)
+
 ## Overview
 
 This library provides 600+ vehicle data signals organized into 12 QML modules, each mapping to a VSS domain. Every signal is exposed as a `Q_PROPERTY` on a QObject-derived class, usable directly from both C++ and QML. A built-in KUKSA Databroker backend plugin connects to [Eclipse KUKSA](https://github.com/eclipse-kuksa/kuksa-databroker) via gRPC to provide live vehicle data.
@@ -108,36 +110,35 @@ The shared `covesavss_common` library (enums) is linked automatically via each f
 
 The library includes a backend plugin (`src/plugins/kuksa/`) that connects to [Eclipse KUKSA Databroker](https://github.com/eclipse-kuksa/kuksa-databroker) via gRPC. It is built automatically when Qt Protobuf and Qt Grpc modules are available.
 
-**Running with KUKSA:**
+**Quick start with the mock databroker:**
+
+A self-contained mock databroker is included at `examples/kuksa-mock.py`. It acts as a gRPC server implementing the KUKSA VAL v2 API, so no Docker or real databroker is needed:
 
 ```sh
-# Start KUKSA Databroker + mock data provider
-docker network create kuksa-net
-docker run --rm -d --name kuksa --network kuksa-net -p 55555:55555 \
-  ghcr.io/eclipse-kuksa/kuksa-databroker:main --insecure
-docker run --rm -d --name kuksa-mock --network kuksa-net \
-  -e VDB_ADDRESS=kuksa:55555 \
-  ghcr.io/eclipse-kuksa/kuksa-mock-provider/mock-provider:main
+# Install Python dependencies (one time)
+pip install grpcio grpcio-tools
 
-# Run the dashboard with the KUKSA backend
-QT_PLUGIN_PATH=build/plugins \
-  KUKSA_HOST=localhost \
-  KUKSA_PORT=55555 \
-  build/examples/dashboard/vss_dashboard
+# Start the mock databroker
+python examples/kuksa-mock.py &
+
+# Run the dashboard
+KUKSA_HOST=localhost KUKSA_PORT=55555 build/examples/dashboard/vss_dashboard
 ```
 
-A custom mock configuration is provided in `examples/kuksa-mock.py` that animates signals across all dashboard sections (speed, RPM, battery SoC, location, temperatures, etc.). Mount it into the mock provider container:
+The mock server compiles the vendored proto files at startup and streams animated values for Vehicle.Speed, CombustionEngine.Speed, and FuelSystem.Range.
+
+**Running with a real KUKSA Databroker:**
 
 ```sh
-docker run --rm -d --name kuksa-mock --network kuksa-net \
-  -e VDB_ADDRESS=kuksa:55555 \
-  -v $(pwd)/examples/kuksa-mock.py:/mock/mock.py:ro \
-  ghcr.io/eclipse-kuksa/kuksa-mock-provider/mock-provider:main
+docker run --rm -d -p 55555:55555 \
+  ghcr.io/eclipse-kuksa/kuksa-databroker:main --insecure
+
+KUKSA_HOST=localhost KUKSA_PORT=55555 build/examples/dashboard/vss_dashboard
 ```
 
 **Configuration:** The plugin reads `KUKSA_HOST` and `KUKSA_PORT` environment variables. It can also be configured at runtime via `updateServiceSettings({"host": "...", "port": ...})` through the Qt Interface Framework service settings system.
 
-**Plugin discovery:** Place the plugin `.dylib`/`.so` in an `interfaceframework/` directory on `QT_PLUGIN_PATH`. The build places it at `build/src/plugins/kuksa/libcovesavss_kuksa_backend.dylib`.
+**Plugin discovery:** The build places the plugin at `build/plugins/interfaceframework/`, and the dashboard example automatically adds this to the library path. For other applications, add `build/plugins` to `QT_PLUGIN_PATH` or call `QCoreApplication::addLibraryPath()`.
 
 ### Custom Backends
 
