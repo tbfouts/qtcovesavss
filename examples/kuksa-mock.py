@@ -12,7 +12,11 @@ The plugin calls:
 Animated signals:
   - Vehicle.Speed                              (float, 0–100 km/h sine wave)
   - Vehicle.Powertrain.CombustionEngine.Speed  (int32, 800–5000 RPM sine wave)
+  - Vehicle.Powertrain.CombustionEngine.ECT    (float, coolant temp ~85–95 C)
   - Vehicle.Powertrain.FuelSystem.Range        (float, 420→380 km slow decline)
+  - Vehicle.Powertrain.FuelSystem.Level        (float, fuel level 0–100%)
+  - Vehicle.Powertrain.Transmission.CurrentGear (int32, gear from speed)
+  - Vehicle.Powertrain.Transmission.IsParkLockEngaged (bool)
 
 Requirements:
     pip install grpcio grpcio-tools
@@ -92,11 +96,35 @@ SIGNALS = {
         "description": "Engine speed measured as rotations per minute.",
         "unit": "rpm",
     },
+    "Vehicle.Powertrain.CombustionEngine.ECT": {
+        "data_type": 11,   # DATA_TYPE_FLOAT
+        "entry_type": 2,   # ENTRY_TYPE_SENSOR
+        "description": "Engine coolant temperature.",
+        "unit": "celsius",
+    },
+    "Vehicle.Powertrain.FuelSystem.Level": {
+        "data_type": 11,   # DATA_TYPE_FLOAT
+        "entry_type": 2,   # ENTRY_TYPE_SENSOR
+        "description": "Fuel level as a percent of capacity. 0 = empty. 100 = full.",
+        "unit": "percent",
+    },
     "Vehicle.Powertrain.FuelSystem.Range": {
         "data_type": 11,   # DATA_TYPE_FLOAT
         "entry_type": 2,   # ENTRY_TYPE_SENSOR
         "description": "Remaining range with current fuel level.",
         "unit": "km",
+    },
+    "Vehicle.Powertrain.Transmission.CurrentGear": {
+        "data_type": 5,    # DATA_TYPE_INT32
+        "entry_type": 2,   # ENTRY_TYPE_SENSOR
+        "description": "Current gear. 0=Neutral, -1=Reverse, 1/2/...=Forward.",
+        "unit": "",
+    },
+    "Vehicle.Powertrain.Transmission.IsParkLockEngaged": {
+        "data_type": 1,    # DATA_TYPE_BOOL
+        "entry_type": 2,   # ENTRY_TYPE_SENSOR
+        "description": "Is the park lock engaged.",
+        "unit": "",
     },
 }
 
@@ -109,14 +137,45 @@ def compute_values(t):
     speed = 50.0 + 50.0 * math.sin(phase)
     rpm = 2900 + 2100 * math.sin(phase)
 
+    # Coolant temp: oscillates gently around 90 C (normal operating range)
+    coolant_temp = 90.0 + 5.0 * math.sin(phase * 0.3)
+
+    # Fuel level: slow decline 75% → 45% over ~200s, then wraps
+    fuel_phase = (t % 200.0) / 200.0
+    fuel_level = 75.0 - 30.0 * fuel_phase
+
     # Slow decline: 420 → 380 over ~100s, then wraps
     range_phase = (t % 100.0) / 100.0
     range_val = 420.0 - 40.0 * range_phase
 
+    # Gear derived from speed — park when stopped, drive gears otherwise
+    if speed < 2.0:
+        gear = 0        # Neutral (park-like at standstill)
+        is_park = True
+    elif speed < 20.0:
+        gear = 1
+        is_park = False
+    elif speed < 45.0:
+        gear = 2
+        is_park = False
+    elif speed < 70.0:
+        gear = 3
+        is_park = False
+    elif speed < 85.0:
+        gear = 4
+        is_park = False
+    else:
+        gear = 5
+        is_park = False
+
     return {
         "Vehicle.Speed": speed,
         "Vehicle.Powertrain.CombustionEngine.Speed": rpm,
+        "Vehicle.Powertrain.CombustionEngine.ECT": coolant_temp,
+        "Vehicle.Powertrain.FuelSystem.Level": fuel_level,
         "Vehicle.Powertrain.FuelSystem.Range": range_val,
+        "Vehicle.Powertrain.Transmission.CurrentGear": gear,
+        "Vehicle.Powertrain.Transmission.IsParkLockEngaged": is_park,
     }
 
 
@@ -180,6 +239,10 @@ def main():
                     v = values[path]
                     if path == "Vehicle.Powertrain.CombustionEngine.Speed":
                         value = types.Value(uint32=int(v))
+                    elif path == "Vehicle.Powertrain.Transmission.CurrentGear":
+                        value = types.Value(int32=int(v))
+                    elif path == "Vehicle.Powertrain.Transmission.IsParkLockEngaged":
+                        value = types.Value(bool=v)
                     else:
                         value = types.Value(float=v)
                     entries[path] = types.Datapoint(value=value)
@@ -188,10 +251,14 @@ def main():
 
                 speed = values["Vehicle.Speed"]
                 rpm = values["Vehicle.Powertrain.CombustionEngine.Speed"]
-                rng = values["Vehicle.Powertrain.FuelSystem.Range"]
-                print(f"\rSpeed: {speed:5.1f} km/h | "
-                      f"RPM: {int(rpm):5d} | "
-                      f"Range: {rng:5.1f} km",
+                ect = values["Vehicle.Powertrain.CombustionEngine.ECT"]
+                flvl = values["Vehicle.Powertrain.FuelSystem.Level"]
+                gear = values["Vehicle.Powertrain.Transmission.CurrentGear"]
+                print(f"\rSpd:{speed:5.1f} | "
+                      f"RPM:{int(rpm):5d} | "
+                      f"ECT:{ect:4.1f} | "
+                      f"Fuel:{flvl:4.1f}% | "
+                      f"Gear:{gear}",
                       end="", flush=True)
 
                 time.sleep(0.1)
@@ -210,6 +277,10 @@ def main():
             v = values[path]
             if path == "Vehicle.Powertrain.CombustionEngine.Speed":
                 value = types.Value(uint32=int(v))
+            elif path == "Vehicle.Powertrain.Transmission.CurrentGear":
+                value = types.Value(int32=int(v))
+            elif path == "Vehicle.Powertrain.Transmission.IsParkLockEngaged":
+                value = types.Value(bool=v)
             else:
                 value = types.Value(float=v)
 

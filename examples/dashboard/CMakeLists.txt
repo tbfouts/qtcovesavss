@@ -7,6 +7,7 @@ qt_add_qml_module(vss_dashboard
     QML_FILES
         Main.qml
         CircularGauge.qml
+        ArcGauge.qml
 )
 
 target_link_libraries(vss_dashboard PRIVATE

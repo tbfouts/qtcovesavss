@@ -14,6 +14,8 @@ Item {
     property string rangeText: "450 mi"
     property bool showReadout: true
     property real readoutDivisor: 1    // 1 → "60", 1000 → "3.5"
+    property real redlineValue: -1     // if >= 0, draw red arc from this value to maxValue
+    property color redlineColor: "#E8531E"
 
     // ── Internal geometry ───────────────────────────────────────
     readonly property real startAngle: -150   // 0-value at 7-o'clock (degrees from 12-o'clock)
@@ -143,7 +145,7 @@ Item {
         }
     }
 
-    // ── Orange decorative arc (bottom of dial) ──────────────────
+    // ── Arc: redline zone or decorative bottom arc ──────────────
     Canvas {
         id: arcCanvas
         anchors.fill: parent
@@ -156,17 +158,30 @@ Item {
             var cy   = height / 2;
             var arcR = (width / 2) - 12;
 
-            var startRad = (160 - 90) * Math.PI / 180;
-            var endRad   = (200 - 90) * Math.PI / 180;
+            var startRad, endRad, color;
+            if (gaugeRoot.redlineValue >= 0) {
+                // Redline arc from redlineValue to maxValue
+                startRad = (gaugeRoot.valueToAngle(gaugeRoot.redlineValue) - 90) * Math.PI / 180;
+                endRad   = (gaugeRoot.valueToAngle(gaugeRoot.maxValue) - 90) * Math.PI / 180;
+                color = gaugeRoot.redlineColor;
+            } else {
+                // Decorative arc at bottom of dial
+                startRad = (160 - 90) * Math.PI / 180;
+                endRad   = (200 - 90) * Math.PI / 180;
+                color = "#E8531E";
+            }
 
             ctx.beginPath();
             ctx.arc(cx, cy, arcR, startRad, endRad);
-            ctx.strokeStyle = "#E8531E";
+            ctx.strokeStyle = color;
             ctx.lineWidth   = 5;
             ctx.lineCap     = "round";
             ctx.stroke();
         }
     }
+
+    onRedlineValueChanged: arcCanvas.requestPaint()
+    onRedlineColorChanged: arcCanvas.requestPaint()
 
     // ── Needle ──────────────────────────────────────────────────
     Item {
